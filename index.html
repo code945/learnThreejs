@@ -103,7 +103,7 @@
         spotLight.shadow.camera.near = 1;
         spotLight.shadow.camera.far = 19000;
         spotLight.shadow.bias = 0; 
-        //scene.add(spotLight);
+        scene.add(spotLight);
         //scene.add(new THREE.SpotLightHelper(spotLight));
          
          
@@ -383,7 +383,7 @@
                 else
                 { 
                     color = new THREE.Color(Math.random(), Math.random(), Math.random());  
-                    h = Math.random() * 10;
+                    h = 5+Math.random() * 5;
                 } 
                 let mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color, side: THREE.DoubleSide }));
                 mesh.rotateX(Math.PI / 2);
