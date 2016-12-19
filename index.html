@@ -389,11 +389,11 @@
                 mesh.rotateX(Math.PI / 2);
                 mesh.position.set(area.px * resizeRatio, h, -area.py * resizeRatio); 
                 mesh.receiveShadow = true;
-                
+                scene.add(mesh);
 
                 if (area.type == 2)
                 {
-                    scene.add(mesh);
+                    
                    
                     let b = new THREE.Box3().setFromObject(mesh);
                     let camera_z =  Math.max(b.max.z,b.max.x) / 0.9;
