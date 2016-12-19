@@ -1,0 +1,283 @@
+﻿{
+  "code": "1",
+  "data": {
+    "models": {
+      "9075": {
+        "name": "Rack 40U",
+        "psid": 1677,
+        "id": "b00e90c2-44e2-11de-a95f-000d566af2f2",
+        "tsid": 325,
+        "sid": 9075,
+        "attrs": {
+          "depth": "1.00080000000000000000",
+          "color": "1513239",
+          "micon": "images/system/model/460/b00e90c2-44e2-11de-a95f-000d566af2f2_49050.png",
+          "width": "0.60000000000000000000",
+          "icon": "images/system/model/460/b00e90c2-44e2-11de-a95f-000d566af2f2_38250.png",
+          "swidth": 0.48341,
+          "racku": "40",
+          "sdepth": 0.8535,
+          "height": "1.9780000000000000",
+          "sheight": 1.778
+        }
+      },
+      "2348": {
+        "name": "RFCode - R155 Temp-Hum",
+        "psid": 340,
+        "id": "512e1982-93cf-11df-83df-001d091dd9dd",
+        "tsid": 1066,
+        "sid": 2348,
+        "attrs": {
+          "depth": "0.00890000000000000000",
+          "color": "65535",
+          "micon": "images/system/model/419/512e1982-93cf-11df-83df-001d091dd9dd_57286.png",
+          "width": "0.05630000000000000000",
+          "icon": "images/system/model/419/512e1982-93cf-11df-83df-001d091dd9dd_57285.png",
+          "swidth": 0.48341,
+          "sdepth": 0.8535,
+          "height": "0.04420000000000000000",
+          "sheight": -0.04445
+        }
+      },
+      "5949": {
+        "name": "Rack 42U",
+        "psid": 1677,
+        "id": "b011f05a-44e2-11de-9c83-000d566af2f2",
+        "tsid": 325,
+        "sid": 5949,
+        "attrs": {
+          "depth": "1.00080000000000000000",
+          "color": "1513239",
+          "micon": "images/system/model/117/b011f05a-44e2-11de-9c83-000d566af2f2_53956.png",
+          "width": "0.60000000000000000000",
+          "icon": "images/system/model/117/b011f05a-44e2-11de-9c83-000d566af2f2_38255.png",
+          "swidth": 0.48341,
+          "racku": "42",
+          "sdepth": 0.8535,
+          "height": "2.0669000000000000",
+          "sheight": 1.8669000000000002
+        }
+      },
+      "4205": {
+        "name": "1950",
+        "psid": 1670,
+        "id": "5f0ec67e-44e2-11de-8378-000d566af2f2",
+        "tsid": 533,
+        "sid": 4205,
+        "attrs": {
+          "rear": "images/system/model/727/5f0ec67e-44e2-11de-8378-000d566af2f2_56325.png",
+          "depth": "0.76200000000000000000",
+          "color": "5942701",
+          "micon": "images/system/model/727/5f0ec67e-44e2-11de-8378-000d566af2f2_51978.png",
+          "width": "0.48260000000000000000",
+          "icon": "images/system/model/727/5f0ec67e-44e2-11de-8378-000d566af2f2_36041.png",
+          "swidth": 0.48341,
+          "sdepth": 0.8535,
+          "height": "0.04290000000000000000",
+          "sheight": -0.04445
+        }
+      }
+    },
+    "types": {
+      "325": {
+        "color": 1513239,
+        "name": "Rack",
+        "id": "59c85e98-cd7b-11dd-96a7-001d091dd9dd",
+        "sid": 325
+      },
+      "533": {
+        "color": 5942701,
+        "name": "Server - Rackmount",
+        "id": "59e3262e-cd7b-11dd-81bf-001d091dd9dd",
+        "sid": 533
+      },
+      "1066": {
+        "color": 65535,
+        "name": "Sensor",
+        "id": "11efc7e6-93cc-11df-8d1a-001d091dd9dd",
+        "sid": 1066
+      }
+    },
+    "devices": [
+      {
+        "owner": null,
+        "color": null,
+        "ip": "127.0.0.1",
+        "nid": "7d7ed4b9-d0fa-5aa9-99ec-6c2762e364b2",
+        "dock_type": 1,
+        "control": 1,
+        "acl": true,
+        "loc_id": 1,
+        "area_id": null,
+        "npid": null,
+        "sid": 2662287,
+        "attrs": null,
+        "msid": 9075,
+        "at": null,
+        "show_value": true,
+        "name": "0107-lori-rack(4)",
+        "is_device": true,
+        "id": "57abf835-c845-4d5a-aa78-b9e601a0c36f",
+        "sn": "",
+        "dock": {
+          "r": 90.0,
+          "side": "front",
+          "tx": 0.0,
+          "ty": 0.0,
+          "tz": 0.0,
+          "ry": 0,
+          "zr": -89.99999999999999,
+          "px": -8.623886068440516,
+          "py": 3.6475892687292393,
+          "xr": 0.0,
+          "pz": 0.989
+        },
+        "value": "0107-lori-rack(4)"
+      },
+      {
+        "owner": null,
+        "color": null,
+        "ip": "",
+        "nid": "27199f45-b11a-580d-b54e-f1f246a6d071",
+        "dock_type": 1,
+        "control": 1,
+        "acl": true,
+        "loc_id": 1,
+        "area_id": null,
+        "npid": null,
+        "sid": 2663056,
+        "attrs": null,
+        "msid": 5949,
+        "at": null,
+        "show_value": true,
+        "name": "1111-304-lori-rack",
+        "is_device": true,
+        "id": "d60a55ab-bf45-4f40-8b96-62a167250bf5",
+        "sn": "",
+        "dock": {
+          "r": 0.0,
+          "side": "front",
+          "tx": 0.0,
+          "ty": 0.0,
+          "tz": 0.0,
+          "ry": 0,
+          "zr": 0.0,
+          "px": -7.624519,
+          "py": -2.3282242,
+          "xr": 0.0,
+          "pz": 1.08345
+        },
+        "value": "1111-304-lori-rack"
+      },
+      {
+        "owner": null,
+        "color": null,
+        "ip": "127.0.0.1",
+        "nid": "fd85d3a9-b336-548d-92a0-08f85e355432",
+        "dock_type": 4,
+        "control": 1,
+        "acl": true,
+        "loc_id": 4,
+        "area_id": null,
+        "npid": "27199f45-b11a-580d-b54e-f1f246a6d071",
+        "sid": 2664558,
+        "attrs": null,
+        "msid": 2348,
+        "at": null,
+        "show_value": true,
+        "name": "0330-lori-sensor",
+        "is_device": true,
+        "id": "f5d19c95-0b04-44c8-b25d-da62ade02bdd",
+        "sn": null,
+        "dock": {
+          "r": 0.0,
+          "side": null,
+          "tx": 0.0,
+          "ty": 0.0,
+          "tz": 0.0,
+          "ry": 0,
+          "zr": 0.0,
+          "px": -7.367062302,
+          "py": -2.8431742,
+          "xr": 0.0,
+          "pz": 1.430017232,
+          "part_id": "door"
+        },
+        "value": "0330-lori-sensor"
+      },
+      {
+        "owner": null,
+        "color": null,
+        "ip": "10.10.10.11",
+        "nid": "8bb472c2-069a-5781-a418-454d14711669",
+        "dock_type": 1,
+        "control": 1,
+        "acl": true,
+        "loc_id": 1,
+        "area_id": null,
+        "npid": null,
+        "sid": 2662792,
+        "attrs": null,
+        "msid": 4205,
+        "at": 9,
+        "show_value": true,
+        "name": "0215-06fgfdfd",
+        "is_device": true,
+        "id": "016d17f1-2510-4256-86d3-6f565950773b",
+        "sn": "qwrq123",
+        "dock": {
+          "r": 0.0,
+          "side": "front",
+          "tx": 0.0,
+          "ty": 0.0,
+          "tz": 0.0,
+          "ry": 0,
+          "zr": 0.0,
+          "px": -6.334126158092485,
+          "py": -1.822650482895582,
+          "xr": 0.0,
+          "pz": 0.0714500000000016
+        },
+        "value": "0215-06fgfdfd"
+      }
+    ],
+    "layer_image": null,
+    "plines": {
+      "340": {
+        "name": "Sensors - RF Code",
+        "id": "ad26f9cc-93cd-11df-84be-001d091dd9dd",
+        "sid": 340,
+        "vsid": 41
+      },
+      "1670": {
+        "name": "PowerEdge",
+        "id": "ca7391ec-d002-11dd-8252-001d091dd9dd",
+        "sid": 1670,
+        "vsid": 246
+      },
+      "1677": {
+        "name": "Generic - Rack",
+        "id": "a425438a-25ef-11de-b7ee-000c29498ca7",
+        "sid": 1677,
+        "vsid": 81
+      }
+    },
+    "vendors": {
+      "81": {
+        "name": "Generic",
+        "id": "6b1723ea-cd81-11dd-adf4-001d091dd9dd",
+        "sid": 81
+      },
+      "246": {
+        "name": "Dell",
+        "id": "6b16fb0e-cd81-11dd-83bf-001d091dd9dd",
+        "sid": 246
+      },
+      "41": {
+        "name": "RF Code",
+        "id": "2c0282fe-93cc-11df-a482-001d091dd9dd",
+        "sid": 41
+      }
+    }
+  }
+}

@@ -1,0 +1,635 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>floor plan</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            font-family: georgia;
+            text-align: center;
+        }
+
+        h1 {
+        }
+
+        a {
+            color: skyblue;
+        }
+
+        @keyframes ledZoom
+        {
+            0%   {transform: scale(0.8,0.8)} 
+            50%  {transform: scale(1.1,1.1)} 
+            100% {transform: scale(0.8,0.8)}
+        }
+        .zoom {
+            animation-name: ledZoom;
+            animation-duration: 2s;
+            animation-timing-function: linear; 
+            animation-iteration-count: infinite;  
+        }
+    </style>
+</head>
+
+<body>
+    <div id="v3dcontainer"> 
+        <!--<input onclick="showSplitView(false)" id="main_view_raido" type="radio" name="splitview" />main view <br/>
+        <input onclick="showSplitView(true)" id="split_view_raido"  type="radio" name="splitview" />split view <br />-->
+         
+
+    </div>
+    <script src="js/three.min.js"></script>
+
+    <script src="js/OrbitControls.js"></script> 
+    <script src='js/dat.gui.min.js'></script>
+    <script src="js/stats.min.js"></script>
+    <script src="js/jQuery-2.1.4.min.js"></script>
+    <script>
+        var scene, camera, renderer, container, controls,
+        cameraPerspective, cameraPerspectiveHelper, cube, gui,
+        floorData, deviceData,enableSplitView,sprite 
+        ;
+        var cableMode = false;
+        var selectedDevice, selectedMaterial;
+        var deviceGeo = new THREE.BoxGeometry(1, 1, 1);
+        var resizeRatio = 100;
+        var fj = "floor.json";
+        var dj = "device.json";
+        var alarms = [
+                //{ deviceId: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", level: 1 },
+                //{ deviceId: "4dbaca11-9447-4810-8f11-2719f05d2441", id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", level: 1 },
+                //{ deviceId: "e46b94f1-5d2f-45f1-ae9a-36be59c64231", id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", level: 1 },
+                //{ deviceId: "ecf29398-40b7-41a0-90e1-be2e7eec30b0", id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", level: 1 }
+        ];
+        var MODELS = {};
+        var refreshLedPositionTimer;
+
+
+        var viewWidth = window.innerWidth;
+        var viewHeight = window.innerHeight;
+
+        this.scene = new THREE.Scene();
+        //this.camera = new THREE.PerspectiveCamera(75, 0.5 * window.innerWidth / window.innerHeight, 0.1, 10000);
+        //this.camera.position.set(0, 1000, 2000);
+        //this.camera.lookAt(new THREE.Vector3(0, 0, 0)); 
+
+        this.cameraPerspective = new THREE.PerspectiveCamera(90, viewWidth / viewHeight , 0.1, 100000);
+        //this.cameraPerspectiveHelper = new THREE.CameraHelper(this.cameraPerspective); 
+        //this.scene.add(this.cameraPerspectiveHelper);
+
+       
+        var light = new THREE.DirectionalLight(0xffffff, 0.6);//设置平行光源
+        light.position.set(-200, 200,  200);//设置光源向量 
+        scene.add(light);// 追加光源到场景
+
+        var light2 = new THREE.DirectionalLight(0xF5F5F5, 0.9);//设置平行光源
+        light2.position.set(200, 200, -200);//设置光源向量 
+        scene.add(light2);// 追加光源到场景
+
+        var spotLight = new THREE.SpotLight(0xE9E9E9, 0.1);
+        spotLight.position.set(0, 18000, 0);
+        spotLight.castShadow = true;
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 0.3;
+        spotLight.distance = 19000;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        spotLight.shadow.camera.near = 1;
+        spotLight.shadow.camera.far = 19000;
+        spotLight.shadow.bias = 0; 
+        scene.add(spotLight);
+        //scene.add(new THREE.SpotLightHelper(spotLight));
+         
+         
+
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+        this.renderer.setClearColor(0x177FB3, 1); 
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        this.container = document.getElementById("v3dcontainer")
+        this.container.appendChild(this.renderer.domElement);   
+        this.controls = new THREE.OrbitControls(this.cameraPerspective, this.renderer.domElement);
+        //controls.addEventListener('end', function () {
+        //    onCameraChange();
+        //});
+
+        //controls.addEventListener('start', function () {
+        //    onBeginCameraChange();
+        //});
+
+
+        //this.showGUIControl();
+
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+
+
+        this.getFloorData();
+        this.showDevices(); 
+        this.render(); 
+        
+        window.addEventListener('resize', onWindowResize, false);
+        document.addEventListener('mousemove', onDocumentMouseMove, false);
+
+
+        function onDocumentMouseMove(event) {
+            //event.preventDefault();
+            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+        }
+
+
+        function generateAssetImage(text){         
+            var width=512, height=256; 
+            var canvas = document.createElement('canvas');
+            canvas.width  = width;
+            canvas.height = height;
+           
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#C3C3C3';
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.font = 50+'px " bold';
+            ctx.fillStyle = '#2891FF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, width/2,height/2); 
+            return canvas;
+        }
+
+        
+
+        function render() {
+
+            requestAnimationFrame(() => this.render());
+            //if (this.enableSplitView) {
+            //    this.cameraPerspective.updateProjectionMatrix();
+            //    this.cameraPerspectiveHelper.update();
+            //    this.cameraPerspectiveHelper.visible = true;
+            //    /* Rendering left half of view with camera( main ) */
+            //    this.renderer.setViewport(0, 0, window.innerWidth / 2, window.innerHeight);    //// first half, perspective camera
+            //    renderer.setClearColor(new THREE.Color().setRGB(0.5, 0.7, 0.7));
+            //    renderer.setScissor(0, 0, window.innerWidth / 2, window.innerHeight);
+            //    renderer.setScissorTest(true);
+            //    this.renderer.render(this.scene, this.camera);
+
+            //    this.renderer.setViewport(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);    /// right half 
+            //    renderer.setScissor(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+            //    renderer.setScissorTest(true);
+            //} 
+            //this.cameraPerspectiveHelper.visible = false; 
+
+
+
+
+
+
+            raycaster.setFromCamera(mouse, cameraPerspective);
+            var intersects = raycaster.intersectObjects(scene.children, true);
+            if (intersects.length > 0) {
+                let obj = intersects[0].object;
+                if (obj && obj.userData && obj.userData.objType == "device") {
+                     
+                    if (selectedDevice != intersects[0].object) {
+                        if (selectedDevice) selectedDevice.material = selectedMaterial;
+                        selectedDevice = intersects[0].object;
+                        selectedMaterial = selectedDevice.material;
+                        //selectedDevice.position.y += 10;
+                        selectedDevice.material = new THREE.MeshBasicMaterial({color:'green'});
+                    } 
+                    
+                    console.log(obj.userData.name);
+                }
+                else if (obj && obj.userData && obj.userData.objType == "cable")
+                {
+                    if (!cableMode)
+                    {
+                        cableMode = true;
+                        ShowCableMode(obj);
+                    }
+                    
+                }
+                else {
+                    if (selectedDevice) {
+                        //selectedDevice.position.y -= 10;
+                        selectedDevice.material = selectedMaterial;
+                    } 
+                    showNormalView();
+                    cableMode = false;
+                    selectedDevice = null;
+                    selectedMaterial = null;
+                }
+                    
+            } else {
+                if (selectedDevice)
+                {
+                    //selectedDevice.position.y -= 10;
+                    selectedDevice.material = selectedMaterial;
+                } 
+                showNormalView();
+                cableMode = false;
+                selectedDevice = null;
+                selectedMaterial = null;
+            } 
+            this.renderer.render(this.scene, this.cameraPerspective); 
+        }
+         
+        
+        function showAlarm()
+        {
+            for (let i = 0; i < alarms.length;i++)
+            {
+                let alarm = alarms[i];
+                let img = "images/led_red.png"
+                let zoom = "";
+                switch (alarm.level)
+                {
+                    case 1:
+                        img = "images/led_red.png";
+                        zoom = "zoom";
+                        break;
+                    case 2:
+                        img = "images/led_green.png";
+                        break;
+                }
+                
+                $("#v3dcontainer").append('<img src="' + img + '" class="' + zoom + '" style="position: absolute;" id="' + alarm.deviceId + '">');
+            }
+            onCameraChange();
+        }
+        
+        function onBeginCameraChange()
+        {
+            clearTimeout(refreshLedPositionTimer);
+            for (let i = 0; i < alarms.length; i++) {
+                let alarm = alarms[i];
+                document.getElementById(alarm.deviceId).style.display = "none"; 
+            }
+           
+            
+        }
+
+        function onCameraChange() {
+            refreshLedPositionTimer = setTimeout(doRefreshLedPosition, 800)
+        }
+
+        function doRefreshLedPosition()
+        {
+            for (let i = 0; i < alarms.length; i++) {
+                let alarm = alarms[i];
+                let obj = this.scene.getObjectByName(alarm.deviceId);
+                if (obj) {
+                    var proj = toScreenPosition(obj);
+                    document.getElementById(alarm.deviceId).style.display = "";
+                    document.getElementById(alarm.deviceId).style.left=(proj.x - 16) + 'px' ;
+                    document.getElementById(alarm.deviceId).style.top = (proj.y - 32) + 'px';
+                }
+            } 
+        }
+
+
+        function toScreenPosition(obj) {
+            var vector = new THREE.Vector3();
+
+            // TODO: need to update this when resize window
+            var widthHalf = 0.5 * renderer.context.canvas.width;
+            var heightHalf = 0.5 * renderer.context.canvas.height;
+
+            obj.updateMatrixWorld();
+            vector.setFromMatrixPosition(obj.matrixWorld);
+            vector.y = vector.y * 2;
+            vector.project(this.cameraPerspective);
+
+            vector.x = (vector.x * widthHalf) + widthHalf;
+            vector.y = -(vector.y * heightHalf) + heightHalf;
+
+            return {
+                x: vector.x,
+                y: vector.y
+            };
+
+        }
+
+
+
+        function getFloorData()
+        {
+            $.getJSON(this.fj, function (result) {
+                floorData = result.data;
+                showAreas();
+                showWall();
+            }); 
+
+        }
+
+        function showWall()
+        {
+
+            let wallgeometry = new THREE.BoxGeometry(1, 1, 1);
+            for (let i = 0 ; i < this.floorData.wall_segments.length; i++) {
+                let seg = this.floorData.wall_segments[i];
+                let start = this.floorData.wall_points[seg.start_idx];
+                let end = this.floorData.wall_points[seg.end_idx];
+
+                let a = new THREE.Vector2(start.px, start.py);
+                let b = new THREE.Vector2(end.px, end.py);
+                let v = b.sub(a);
+
+                let wall_width = v.length() * resizeRatio, wall_height = seg.height * resizeRatio, wall_depth = 2;
+                let material = new THREE.MeshBasicMaterial({ color: 0x898989, transparent: true, opacity: 0.6 });
+                let wall = new THREE.Mesh(wallgeometry, material);
+                wall.scale.x = wall_width;
+                wall.scale.y = wall_height;
+                wall.scale.z = wall_depth;
+
+                wall.position.x = (start.px + end.px) / 2 * resizeRatio
+                wall.position.y = wall_height / 2;
+                wall.position.z = -(start.py + end.py) / 2 * resizeRatio;
+
+                let angle = Math.atan2(v.y, v.x);
+                wall.rotateY(angle);
+                wall.castShadow = true;
+                scene.add(wall);
+            }
+        }
+
+
+        function showAreas()
+        {
+            for (let i = 0 ; i < this.floorData.areas.length; i++) {
+                let area = this.floorData.areas[i];
+                var areaPts = [];
+                for (let idx = 0 ; idx < area.points.length; idx++) {
+                    let p = area.points[idx];
+                    let v = new THREE.Vector2(p.px * resizeRatio, -p.py * resizeRatio); 
+                    areaPts.push(v);
+                }
+                let areaShape = new THREE.Shape(areaPts);
+                let geometry = new THREE.ShapeGeometry(areaShape); 
+                let color = '#729CB9';
+                let h = 0;
+
+                if (area.type == 2)
+                    color = '#729CB9';
+                else
+                { 
+                    color = new THREE.Color(Math.random(), Math.random(), Math.random());  
+                    h =5 + Math.random() * 3;
+                } 
+                let mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color, side: THREE.DoubleSide }));
+                mesh.rotateX(Math.PI / 2);
+                mesh.position.set(area.px * resizeRatio, h, -area.py * resizeRatio); 
+                mesh.receiveShadow = true;
+                scene.add(mesh);
+
+                if (area.type == 2)
+                {
+                    
+                   
+                    let b = new THREE.Box3().setFromObject(mesh);
+                    let camera_z =  Math.max(b.max.z,b.max.x) / 0.9;
+                    let camera_y = Math.tan(Math.PI / 5) * Math.abs(camera_z);
+                    this.cameraPerspective.position.set(b.max.x * 0.2, camera_y, camera_z);
+
+                    this.cameraPerspective.lookAt(new THREE.Vector3(0, 0, 0));
+                    console.log(b);
+                }
+
+            }
+        }
+
+        function showDevices()
+        {
+            $.getJSON(this.dj, function (result) {
+                deviceData = result.data;
+                alalysisModel();
+                for (let i = 0 ; i < deviceData.devices.length; i++) {
+                    let device = deviceData.devices[i];
+                    let model = deviceData.models[device.msid];
+                    let type = deviceData.types[model.tsid];
+                    //if (type.id == "59c85e98-cd7b-11dd-96a7-001d091dd9dd") {
+                    //    //rack
+                    //    showRack(device,model);
+                    //}
+                    //else {
+                        //others
+                    showNormal(device, model); 
+
+                    //}
+                        //setTimeout(showAlarm, 800); 
+                }
+                showCable(deviceData.devices[3], deviceData.devices[33])
+                showCable(deviceData.devices[3], deviceData.devices[18])
+                showCable(deviceData.devices[3], deviceData.devices[12])
+            });
+        }
+
+        function ShowCableMode(cable)
+        {
+            for (let i in this.scene.children)
+            {
+                let iscableDevice = this.scene.children[i].name == cable.userData.d1 || this.scene.children[i].name == cable.userData.d2;
+                if (this.scene.children[i].userData.objType == "device" && !iscableDevice)
+                {
+                    this.scene.children[i].castShadow = false; 
+                    this.scene.children[i].material = new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.2 });
+                }
+            }
+        }
+
+        function showNormalView()
+        {
+            if (cableMode)
+            for (let i in this.scene.children) { 
+                if (this.scene.children[i].userData.objType == "device") {
+                    this.scene.children[i].castShadow = true; 
+                    this.scene.children[i].material = MODELS[this.scene.children[i].userData.msid].material;
+                }
+            }
+        }
+
+
+        function alalysisModel()
+        {
+            let baseUrl = "http://dev-vi50-8054.op111/";
+            for (let i in this.deviceData.models) {
+                let model = deviceData.models[i]; 
+                let width = model.attrs.width,
+                    height = model.attrs.height,
+                    depth = model.attrs.depth;
+                let color = 0xC3C3C3;
+                
+
+                var rightMat = new THREE.MeshPhongMaterial({ color: color, });
+                var leftMat = new THREE.MeshPhongMaterial({ color: color });
+                var topMat = new THREE.MeshPhongMaterial({ color: color });
+               
+                var bottomMat = new THREE.MeshPhongMaterial({ color: color });
+                var frontMat = new THREE.MeshPhongMaterial({ color: color });
+                if (model.attrs.icon)
+                    frontMat = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture(baseUrl + model.attrs.icon) });
+
+                var backMat = new THREE.MeshPhongMaterial({ color: color });
+                if (model.attrs.rear)
+                    backMat = new THREE.MeshPhongMaterial({ map: THREE.ImageUtils.loadTexture(baseUrl + model.attrs.rear) });
+                var materials = [rightMat, leftMat, topMat, bottomMat, frontMat, backMat]; 
+                var meshFaceMaterial = new THREE.MultiMaterial(materials); 
+                let cube = new THREE.Mesh(deviceGeo, meshFaceMaterial);
+                cube.scale.set(width * resizeRatio, height * resizeRatio, depth * resizeRatio);
+                MODELS[model.sid] = cube;
+            }
+        }
+
+        function showRack(device,model)
+        {
+
+        }
+
+        function showNormal(device, model)
+        {  
+            let cube = MODELS[model.sid].clone(); 
+            cube.position.set(device.dock.px * resizeRatio, device.dock.pz * resizeRatio , -device.dock.py * resizeRatio);
+            cube.rotateY(device.dock.r * Math.PI / 180);
+            cube.rotateX(device.dock.xr * Math.PI / 180);
+            cube.rotateY(device.dock.zr * Math.PI / 180);
+            cube.name = device.id;
+            cube.castShadow = true;
+            scene.add(cube);
+
+            var canvas = generateAssetImage(device.name);
+            var texture = new THREE.CanvasTexture(canvas);  
+            var material = new THREE.MeshPhongMaterial({ map: texture });
+            cube.material.materials[2] = material;
+            cube.userData = device;
+            cube.userData.objType = "device";
+
+            let idx = this.deviceData.devices.indexOf(device)
+            if (idx != 3 && idx != 33 && idx != 18 && idx != 12) {
+                //cube.visible = false;
+                
+            } 
+
+            if (model.sid == 9557) {
+                alarms.push({ deviceId: device.id, id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4", level: 1 });
+            }
+            else
+                alarms.push({ deviceId: device.id , id: "a0f99a0f-6d71-4bd1-aee6-2d51a17b5eb4" , level: 2 });
+
+        }
+
+
+        function showCable(device1, device2)
+        {
+            let heightOffset = 50;
+            let maxHeight = 350;
+
+            let material = new THREE.LineBasicMaterial({
+                color: new THREE.Color(Math.random(), Math.random(), Math.random()),
+                linewidth:20,
+                opacity:0.7,
+                linecap: 'round', //ignored by WebGLRenderer
+                linejoin: 'round' //ignored by WebGLRenderer
+            });
+            let d1xOffset = device1.dock.px * resizeRatio +10* Math.random();
+            let d2xOffset = device2.dock.px * resizeRatio +10* Math.random();
+            let d1yOffset = -device1.dock.py * resizeRatio + 10 * Math.random();
+            let d2yOffset = -device2.dock.py * resizeRatio + 10 * Math.random();
+
+
+
+            let v1 = new THREE.Vector3(d1xOffset, 2 * device1.dock.pz * resizeRatio, d1yOffset);
+            let v2 = new THREE.Vector3(d1xOffset, maxHeight, d1yOffset);
+            let v3 = new THREE.Vector3(d2xOffset, maxHeight, d1yOffset);
+            let v4 = new THREE.Vector3(d2xOffset, maxHeight, d2yOffset);
+            let v5 = new THREE.Vector3(d2xOffset, 2 * device2.dock.pz * resizeRatio, d2yOffset);
+
+
+            var geometry = new THREE.Geometry();
+            geometry.vertices.push( v1,v2,v3,v4,v5 ); 
+            var line = new THREE.Line(geometry, material);
+            line.userData.d1 = device1.id;
+            line.userData.d2 = device2.id;
+            line.userData.objType = "cable";
+            scene.add(line);  
+        }
+
+
+        function onWindowResize() {
+
+            cameraPerspective.aspect = window.innerWidth / window.innerHeight;
+            cameraPerspective.updateProjectionMatrix();
+
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+        }
+
+        function showGUIControl()
+        {
+
+
+            /* rotational dataset for perspective camera */
+            let camPerspectiveRot = {
+                x: 0,
+                y: 0,
+                z: 0
+            };
+
+
+            this.gui = new dat.GUI({ autoplace: false });
+            // perspective camera controls
+            let pc = this.gui.addFolder("PerspectiveCamera ");
+            pc.add(this.cameraPerspective, "near", 0.1, 1000);
+            pc.add(this.cameraPerspective, "far", 200, 5000);
+            pc.add(this.cameraPerspective, "fov", 1, 120);
+
+            let folder = pc.addFolder("Rotation");
+            folder.add(camPerspectiveRot, "x", -180, 180)
+                .onChange(function (v) {
+                    self.cameraPerspective.rotation.x = v * 3.14 / 180;
+                });
+            folder.add(camPerspectiveRot, "y", -180, 180)
+                .onChange(function (v) {
+                    self.cameraPerspective.rotation.y = v * 3.14 / 180;
+                });
+            folder.add(camPerspectiveRot, "z", -180, 180)
+                .onChange(function (v) {
+                    self.cameraPerspective.rotation.y = v * 3.14 / 180;
+                });
+
+            folder = pc.addFolder("Position");
+            folder.add(this.cameraPerspective.position, "x", -10000, 10000);
+            folder.add(this.cameraPerspective.position, "y", -10000, 10000);
+            folder.add(this.cameraPerspective.position, "z", -10000, 10000);
+            pc.domElement.id = "PerspectiveCameraControls";
+            //var axisHelper = new THREE.AxisHelper(5000);
+            //scene.add(axisHelper);
+        }
+         
+
+        function showSplitView(f)
+        {
+            this.enableSplitView = f;
+            this.controls = null;
+            if (this.enableSplitView) {
+                this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement); 
+            }
+            else {
+                this.controls = new THREE.OrbitControls(this.cameraPerspective, this.renderer.domElement);
+            }
+
+        }
+
+
+    </script>
+</body>
+
+</html>
