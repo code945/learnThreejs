@@ -383,7 +383,7 @@
                 else
                 { 
                     color = new THREE.Color(Math.random(), Math.random(), Math.random());  
-                    h =5 + Math.random() * 3;
+                    h = Math.random() * 10;
                 } 
                 let mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: color, side: THREE.DoubleSide }));
                 mesh.rotateX(Math.PI / 2);
@@ -534,7 +534,7 @@
 
             let material = new THREE.LineBasicMaterial({
                 color: new THREE.Color(Math.random(), Math.random(), Math.random()),
-                linewidth:20,
+                linewidth:5,
                 opacity:0.7,
                 linecap: 'round', //ignored by WebGLRenderer
                 linejoin: 'round' //ignored by WebGLRenderer
