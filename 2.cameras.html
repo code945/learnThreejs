@@ -1,0 +1,101 @@
+<html>
+<head>
+    <title>Three.js Hello World</title>
+    <style>
+        body { margin: 0; }
+        canvas { width: 100%; height: 100% }
+    </style>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+</head>
+<body>
+<div style="position: absolute">
+    <input type="radio" id="rd1" name="rd" onclick="changeCamera(0)">  <label for="rd1">PerspectiveCamera</label>
+    <input type="radio" id="rd2"  name="rd" onclick="changeCamera(1)"> <label for="rd2">OrthographicCamera</label>
+</div>
+
+<script>
+    var activeCamera = undefined;
+    var scene = new THREE.Scene();
+    //主摄像机
+    var camera = new THREE.PerspectiveCamera( 75, 0.5*window.innerWidth/window.innerHeight, 0.1, 100000 );
+    camera.position.set(50,50,50);
+    camera.lookAt(new THREE.Vector3(0, 0, 0));
+    //透视相机
+    var cameraPerspective = new THREE.PerspectiveCamera(75, 0.5*window.innerWidth/window.innerHeight, 0.1, 50);
+    cameraPerspective.position.set(0,0,20);
+    cameraPerspective.lookAt(new THREE.Vector3(0, 0, 0));
+    //透视相机辅助线
+    var cameraPerspectiveHelper = new THREE.CameraHelper(cameraPerspective);
+    scene.add(cameraPerspectiveHelper);
+    //正交相机
+    var cameraOrthographic = new THREE.OrthographicCamera(-0.5 * 100 / 2, 0.5 * 100 / 2, 0.5 * 100 / 2, -0.5 * 100 / 2, 0.1, 100);
+    cameraOrthographic.position.set(0,0,20);
+    cameraOrthographic.lookAt(new THREE.Vector3(0, 0, 0));
+    //正交相机辅助线
+    var cameraOrthographicHelper = new THREE.CameraHelper(cameraOrthographic);
+    scene.add(cameraOrthographicHelper);
+    activeCamera = cameraPerspective;
+
+    var renderer = new THREE.WebGLRenderer({antialias: true });
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    document.body.appendChild( renderer.domElement );
+
+    var geometry = new THREE.BoxGeometry( 2, 2, 2 );
+    var material = new THREE.MeshBasicMaterial( { color:0xff5678  } );
+    var cube = new THREE.Mesh( geometry, material );
+    cube.position.set(0,0,0);
+    scene.add( cube );
+
+    var cube2 = cube.clone();
+    cube2.position.set(3,0,-28);
+    scene.add(cube2);
+
+    //鼠标拖拽旋转控制
+    var controls = new THREE.OrbitControls(camera , renderer.domElement);
+    //主xyz轴辅助线
+    scene.add(new THREE.AxisHelper(50));
+
+    var changeCamera = function (flag) {
+        if(flag == 0)
+            activeCamera = cameraPerspective;
+        else
+            activeCamera = cameraOrthographic;
+
+    }
+
+    var render = function () {
+        requestAnimationFrame( render );
+
+
+        if (activeCamera instanceof THREE.PerspectiveCamera) {
+            cameraPerspectiveHelper.visible = true;
+            cameraOrthographicHelper.visible = false;
+        } else {
+            cameraPerspectiveHelper.visible = false;
+            cameraOrthographicHelper.visible = true;
+        }
+
+        //渲染左侧
+        renderer.setViewport( 0, 0, window.innerWidth / 2, window.innerHeight);
+        renderer.setClearColor(new THREE.Color().setRGB(0.5, 0.7, 0.7));
+        renderer.setScissor(0, 0, window.innerWidth / 2, window.innerHeight);
+        renderer.setScissorTest(true);
+        renderer.render(scene, camera);
+
+        cameraPerspectiveHelper.visible = false;
+        cameraOrthographicHelper.visible = false;
+
+        //渲染右侧
+        renderer.setViewport(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);    /// right half
+        renderer.setScissor(window.innerWidth / 2, 0, window.innerWidth / 2, window.innerHeight);
+        renderer.setScissorTest(true);
+        renderer.setClearColor(new THREE.Color().setRGB(0.6, 0.2, 0.5));
+        renderer.render(scene, activeCamera);
+
+    };
+
+    render();
+</script>
+</body>
+</html>
