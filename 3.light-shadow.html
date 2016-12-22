@@ -1,0 +1,161 @@
+<html>
+<head>
+    <title>Three.js Hello World</title>
+    <style>
+        body { margin: 0; }
+        canvas { width: 100%; height: 100% }
+    </style>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/jQuery-2.1.4.min.js"></script>
+</head>
+<body>
+<div style="position: absolute">
+    <input type="radio" id="rd1" name="rd" onclick="changeLight(0)">  <label for="rd1">Point Light</label>
+    <input type="radio" id="rd2" name="rd" onclick="changeLight(1)"> <label for="rd2">Directional Light</label>
+    <input type="radio" id="rd3" name="rd" onclick="changeLight(2)"> <label for="rd3">Spot Light</label>
+</div>
+<script>
+    var lightDirect, lightSpot, lightPoint, lightDirectHelper, lightSpotHelper, lightPointHelper;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(20, 20, 20);
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x177FB3, 1);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    document.body.appendChild(renderer.domElement);
+
+
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    initLights();
+
+    addCube();
+    addGround();
+
+    var render = function () {
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+    };
+
+    render();
+
+
+    function initLights() {
+        lightDirect = new THREE.DirectionalLight(0xffffff, 0.8);//设置平行光源
+        lightDirect.position.set(0, 10, -5);//设置光源向量
+        lightDirect.castShadow = true;
+        lightDirect.angle = Math.PI / 4;
+        lightDirect.penumbra = 0.3;
+        lightDirect.distance = 19000;
+        lightDirect.shadow.mapSize.width = 1024;
+        lightDirect.shadow.mapSize.height = 1024;
+        lightDirect.shadow.camera.near = 1;
+        lightDirect.shadow.camera.far = 19000;
+        lightDirect.shadow.bias = 0;
+        scene.add(lightDirect);// 追加光源到场景
+        lightDirect.visible = false;
+
+        lightDirectHelper = new THREE.DirectionalLightHelper(lightDirect);
+        scene.add(lightDirectHelper);
+        lightDirectHelper.visible = false;
+
+
+        lightSpot = new THREE.SpotLight(0xE9E9E9);
+        lightSpot.position.set(0, 10, -5);
+        lightSpot.castShadow = true;
+        lightSpot.angle = Math.PI / 4;
+        lightSpot.penumbra = 0.3;
+        lightSpot.distance = 100;
+        lightSpot.shadow.mapSize.width = 1024;
+        lightSpot.shadow.mapSize.height = 1024;
+        lightSpot.shadow.camera.near = 1;
+        lightSpot.shadow.camera.far = 100;
+        lightSpot.shadow.bias = 0;
+        scene.add(lightSpot);
+        lightSpot.visible = false;
+
+        lightSpotHelper = new THREE.SpotLightHelper(lightSpot);
+        scene.add(lightSpotHelper);
+        lightSpotHelper.visible = false;
+
+        lightPoint = new THREE.PointLight(0xE9E9E9, 0.5, 20);
+        lightPoint.position.set(0, 10, -5);
+        lightPoint.castShadow = true;
+        lightPoint.angle = Math.PI / 4;
+        lightPoint.penumbra = 0.3;
+        lightPoint.shadow.mapSize.width = 1024;
+        lightPoint.shadow.mapSize.height = 1024;
+        lightPoint.shadow.camera.near = 1;
+        lightPoint.shadow.camera.far = 100;
+        lightPoint.shadow.bias = 0;
+        scene.add(lightPoint);
+
+        lightPointHelper = new THREE.PointLightHelper(lightPoint);
+        scene.add(lightPointHelper);
+
+    }
+
+
+    function changeLight(flag)
+    {
+        if (flag == 0)
+        {
+            lightDirectHelper, lightSpotHelper, lightPointHelper
+            lightDirect.visible
+                    = lightDirectHelper.visible
+                    = lightSpot.visible
+                    = lightSpotHelper.visible
+                    = false;
+            lightPoint.visible =lightPointHelper.visible =  true;
+        }
+        else if (flag == 1) {
+            lightPoint.visible
+                    = lightPointHelper.visible
+                    = lightSpot.visible
+                    = lightSpotHelper.visible
+                    = false;
+            lightDirect.visible
+                    = lightDirectHelper.visible = true;
+        }
+        if (flag == 2) {
+
+            lightPoint.visible
+                    = lightPointHelper.visible
+                    = lightDirect.visible
+                    = lightDirectHelper.visible
+                    = false;
+            lightSpot.visible
+                    = lightSpotHelper.visible = true;
+        }
+    }
+
+
+    function addCube() {
+        var geometry = new THREE.BoxGeometry(2, 2, 2);
+        var material = new THREE.MeshBasicMaterial({ color: 0xff5678 });
+        var cube = new THREE.Mesh(geometry, material);
+        cube.position.set(0, 2, 0);
+        cube.castShadow = true;
+        scene.add(cube);
+    }
+
+    function addGround() {
+        //ground
+        var geometry = new THREE.PlaneGeometry(200, 200, 2);
+        var material = new THREE.MeshPhongMaterial({ color: '#eee', side: THREE.DoubleSide });
+        var plane = new THREE.Mesh(geometry, material);
+        plane.rotateX(-Math.PI / 2);
+        plane.receiveShadow = true;
+        scene.add(plane);
+    }
+
+
+
+
+</script>
+</body>
+</html>
