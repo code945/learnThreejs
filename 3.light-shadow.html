@@ -2,8 +2,14 @@
 <head>
     <title>Three.js Hello World</title>
     <style>
-        body { margin: 0; }
-        canvas { width: 100%; height: 100% }
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
     </style>
     <script src="js/three.min.js"></script>
     <script src="js/OrbitControls.js"></script>
@@ -11,12 +17,16 @@
 </head>
 <body>
 <div style="position: absolute">
-    <input type="radio" id="rd1" name="rd" onclick="changeLight(0)">  <label for="rd1">Point Light</label>
+    <input type="radio" id="rd1" name="rd" onclick="changeLight(0)" >  <label for="rd1">Point Light</label>
     <input type="radio" id="rd2" name="rd" onclick="changeLight(1)"> <label for="rd2">Directional Light</label>
     <input type="radio" id="rd3" name="rd" onclick="changeLight(2)"> <label for="rd3">Spot Light</label>
+    <input type="checkbox" id="rd4" name="rd" onclick="changeHemisphereLight()">  <label for="rd4">Hemisphere Light</label>
+    <input type="checkbox" id="rd5" name="rd" onclick="changeambientLight()" >  <label for="rd5">AmbientLight Light</label>
 </div>
 <script>
-    var lightDirect, lightSpot, lightPoint, lightDirectHelper, lightSpotHelper, lightPointHelper;
+    var ambientLight,lightHemisphere, lightDirect, lightSpot, lightPoint,
+            lightHemisphereHelper, lightDirectHelper, lightSpotHelper, lightPointHelper;
+    var cube;
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(20, 20, 20);
@@ -35,9 +45,19 @@
 
     addCube();
     addGround();
-
+    var step = 135;
+    var direction = 0;
     var render = function () {
         requestAnimationFrame(render);
+
+        step += 0.01;
+        cube.position.x = 2 + (1 * (Math.cos(step)));
+        cube.position.y = 2 + (10 * Math.abs(Math.sin(step)));
+
+        cube.rotation.x += 0.03;
+        cube.rotation.y += 0.03;
+        cube.rotation.z += 0.03;
+
         renderer.render(scene, camera);
     };
 
@@ -45,17 +65,28 @@
 
 
     function initLights() {
-        lightDirect = new THREE.DirectionalLight(0xffffff, 0.8);//设置平行光源
-        lightDirect.position.set(0, 10, -5);//设置光源向量
+
+        ambientLight = new THREE.AmbientLight(0xF9CC14, 1);
+        ambientLight.visible = false;
+        scene.add(ambientLight);
+
+        lightHemisphere = new THREE.HemisphereLight(0xCEE2FC, 0xffffff, 0.4);
+        lightHemisphere.position.set( 0, 200, -20 );
+        lightHemisphere.visible =false;
+        scene.add( lightHemisphere );
+
+        lightHemisphereHelper = new THREE.HemisphereLightHelper(lightHemisphere);
+        scene.add(lightHemisphereHelper);
+        lightHemisphereHelper.visible = false;
+
+
+        lightDirect = new THREE.DirectionalLight(0xf2f2f2, 0.8);//设置平行光源
+        lightDirect.position.set(20, 20, -20);//设置光源向量
         lightDirect.castShadow = true;
-        lightDirect.angle = Math.PI / 4;
-        lightDirect.penumbra = 0.3;
-        lightDirect.distance = 19000;
-        lightDirect.shadow.mapSize.width = 1024;
-        lightDirect.shadow.mapSize.height = 1024;
-        lightDirect.shadow.camera.near = 1;
-        lightDirect.shadow.camera.far = 19000;
-        lightDirect.shadow.bias = 0;
+        //lightDirect.shadow.mapSize.width = 1024;
+        //lightDirect.shadow.mapSize.height = 1024;
+        //lightDirect.shadow.camera.near = 1;
+        //lightDirect.shadow.camera.far = 100;
         scene.add(lightDirect);// 追加光源到场景
         lightDirect.visible = false;
 
@@ -65,16 +96,14 @@
 
 
         lightSpot = new THREE.SpotLight(0xE9E9E9);
-        lightSpot.position.set(0, 10, -5);
+        lightSpot.position.set(0, 20, -20);
         lightSpot.castShadow = true;
         lightSpot.angle = Math.PI / 4;
         lightSpot.penumbra = 0.3;
-        lightSpot.distance = 100;
         lightSpot.shadow.mapSize.width = 1024;
         lightSpot.shadow.mapSize.height = 1024;
         lightSpot.shadow.camera.near = 1;
         lightSpot.shadow.camera.far = 100;
-        lightSpot.shadow.bias = 0;
         scene.add(lightSpot);
         lightSpot.visible = false;
 
@@ -82,23 +111,30 @@
         scene.add(lightSpotHelper);
         lightSpotHelper.visible = false;
 
-        lightPoint = new THREE.PointLight(0xE9E9E9, 0.5, 20);
+        lightPoint = new THREE.PointLight(0xE9E9E9, 0.9);
         lightPoint.position.set(0, 10, -5);
         lightPoint.castShadow = true;
-        lightPoint.angle = Math.PI / 4;
-        lightPoint.penumbra = 0.3;
         lightPoint.shadow.mapSize.width = 1024;
         lightPoint.shadow.mapSize.height = 1024;
         lightPoint.shadow.camera.near = 1;
         lightPoint.shadow.camera.far = 100;
-        lightPoint.shadow.bias = 0;
         scene.add(lightPoint);
+        lightPoint.visible = false;
 
         lightPointHelper = new THREE.PointLightHelper(lightPoint);
         scene.add(lightPointHelper);
+        lightPointHelper.visible = false;
 
     }
 
+    function changeambientLight() {
+        ambientLight.visible = !ambientLight.visible;
+    }
+
+    function changeHemisphereLight()
+    {
+        lightHemisphere.visible = lightHemisphereHelper.visible = !lightHemisphere.visible;
+    }
 
     function changeLight(flag)
     {
@@ -109,7 +145,7 @@
                     = lightDirectHelper.visible
                     = lightSpot.visible
                     = lightSpotHelper.visible
-                    = false;
+                    =false;
             lightPoint.visible =lightPointHelper.visible =  true;
         }
         else if (flag == 1) {
@@ -121,7 +157,7 @@
             lightDirect.visible
                     = lightDirectHelper.visible = true;
         }
-        if (flag == 2) {
+        else if (flag == 2) {
 
             lightPoint.visible
                     = lightPointHelper.visible
@@ -131,13 +167,14 @@
             lightSpot.visible
                     = lightSpotHelper.visible = true;
         }
+
     }
 
 
     function addCube() {
         var geometry = new THREE.BoxGeometry(2, 2, 2);
-        var material = new THREE.MeshBasicMaterial({ color: 0xff5678 });
-        var cube = new THREE.Mesh(geometry, material);
+        var material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+        cube = new THREE.Mesh(geometry, material);
         cube.position.set(0, 2, 0);
         cube.castShadow = true;
         scene.add(cube);
