@@ -17,21 +17,23 @@
 </head>
 <body>
 <div style="position: absolute">
-    <input type="radio" id="rd1" name="rd" onclick="changeLight(0)" >  <label for="rd1">Point Light</label>
+    <input type="radio" id="rd1" name="rd" onclick="changeLight(0)"> <label for="rd1">Point Light</label>
     <input type="radio" id="rd2" name="rd" onclick="changeLight(1)"> <label for="rd2">Directional Light</label>
     <input type="radio" id="rd3" name="rd" onclick="changeLight(2)"> <label for="rd3">Spot Light</label>
-    <input type="checkbox" id="rd4" name="rd" onclick="changeHemisphereLight()">  <label for="rd4">Hemisphere Light</label>
-    <input type="checkbox" id="rd5" name="rd" onclick="changeambientLight()" >  <label for="rd5">AmbientLight Light</label>
+    <input type="checkbox" id="rd4" name="rd" onclick="changeHemisphereLight()"> <label for="rd4">Hemisphere
+    Light</label>
+    <input type="checkbox" id="rd5" name="rd" onclick="changeambientLight()"> <label for="rd5">AmbientLight
+    Light</label>
 </div>
 <script>
-    var ambientLight,lightHemisphere, lightDirect, lightSpot, lightPoint,
+    var ambientLight, lightHemisphere, lightDirect, lightSpot, lightPoint,
             lightHemisphereHelper, lightDirectHelper, lightSpotHelper, lightPointHelper;
     var cube;
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camera.position.set(20, 20, 20);
 
-    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x177FB3, 1);
     renderer.shadowMap.enabled = true;
@@ -71,9 +73,9 @@
         scene.add(ambientLight);
 
         lightHemisphere = new THREE.HemisphereLight(0xCEE2FC, 0xffffff, 0.4);
-        lightHemisphere.position.set( 0, 200, -20 );
-        lightHemisphere.visible =false;
-        scene.add( lightHemisphere );
+        lightHemisphere.position.set(0, 200, -20);
+        lightHemisphere.visible = false;
+        scene.add(lightHemisphere);
 
         lightHemisphereHelper = new THREE.HemisphereLightHelper(lightHemisphere);
         scene.add(lightHemisphereHelper);
@@ -131,22 +133,19 @@
         ambientLight.visible = !ambientLight.visible;
     }
 
-    function changeHemisphereLight()
-    {
+    function changeHemisphereLight() {
         lightHemisphere.visible = lightHemisphereHelper.visible = !lightHemisphere.visible;
     }
 
-    function changeLight(flag)
-    {
-        if (flag == 0)
-        {
+    function changeLight(flag) {
+        if (flag == 0) {
             lightDirectHelper, lightSpotHelper, lightPointHelper
             lightDirect.visible
                     = lightDirectHelper.visible
                     = lightSpot.visible
                     = lightSpotHelper.visible
-                    =false;
-            lightPoint.visible =lightPointHelper.visible =  true;
+                    = false;
+            lightPoint.visible = lightPointHelper.visible = true;
         }
         else if (flag == 1) {
             lightPoint.visible
@@ -173,7 +172,7 @@
 
     function addCube() {
         var geometry = new THREE.BoxGeometry(2, 2, 2);
-        var material = new THREE.MeshPhongMaterial({ color: 0xffffff });
+        var material = new THREE.MeshPhongMaterial({color: 0xffffff});
         cube = new THREE.Mesh(geometry, material);
         cube.position.set(0, 2, 0);
         cube.castShadow = true;
@@ -183,14 +182,12 @@
     function addGround() {
         //ground
         var geometry = new THREE.PlaneGeometry(200, 200, 2);
-        var material = new THREE.MeshPhongMaterial({ color: '#eee', side: THREE.DoubleSide });
+        var material = new THREE.MeshPhongMaterial({color: '#eee', side: THREE.DoubleSide});
         var plane = new THREE.Mesh(geometry, material);
         plane.rotateX(-Math.PI / 2);
         plane.receiveShadow = true;
         scene.add(plane);
     }
-
-
 
 
 </script>

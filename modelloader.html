@@ -19,63 +19,59 @@
 </head>
 <body>
 
-    <script>
-         
+<script>
+
     var mtlLoader = new THREE.MTLLoader();
     var objLoader = new THREE.OBJLoader();
 
     var floorData;
     var resizeRatio = 50;
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 0.1, 10000 );
-    camera.position.set(0,500,500);
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 500, 500);
 
-    var renderer = new THREE.WebGLRenderer({antialias: true });
-    renderer.setSize( window.innerWidth, window.innerHeight );
-    renderer.setClearColor(0x177FB3,1);
-    document.body.appendChild( renderer.domElement );
+    var renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x177FB3, 1);
+    document.body.appendChild(renderer.domElement);
 
 
     var lightAm = new THREE.AmbientLight("#DFDFDF", 1);
     scene.add(lightAm);
 
-    var lightDirect = new THREE.DirectionalLight(0xffffff, 0.6);//ÉèÖÃÆ½ÐÐ¹âÔ´
-    lightDirect.position.set(50, 200, -50);//ÉèÖÃ¹âÔ´ÏòÁ¿
+    var lightDirect = new THREE.DirectionalLight(0xffffff, 0.6);//ï¿½ï¿½ï¿½ï¿½Æ½ï¿½Ð¹ï¿½Ô´
+    lightDirect.position.set(50, 200, -50);//ï¿½ï¿½ï¿½Ã¹ï¿½Ô´ï¿½ï¿½ï¿½ï¿½
     scene.add(lightDirect);
 
-    var controls = new THREE.OrbitControls(camera , renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    loadModel("obj/humvee/", "humvee", { x: 0, y: 0, z: 0 });
+    loadModel("obj/humvee/", "humvee", {x: 0, y: 0, z: 0});
     render();
 
     function render() {
-        requestAnimationFrame( render );
+        requestAnimationFrame(render);
         renderer.render(scene, camera);
-    };
+    }
+    ;
 
-    function loadModel(folder,name,position)
-    {
+    function loadModel(folder, name, position) {
         mtlLoader.setBaseUrl(folder);
         mtlLoader.setPath(folder);
-        mtlLoader.load(name + ".mtl", function (materials) {  
-            objLoader.setMaterials(materials); 
-            objLoader.load(folder+ name + ".obj", function (object) {
+        mtlLoader.load(name + ".mtl", function (materials) {
+            objLoader.setMaterials(materials);
+            objLoader.load(folder + name + ".obj", function (object) {
 
                 object.position.set(position.x, position.y, position.z);
-                object.rotateX(-Math.PI/2)
+                object.rotateX(-Math.PI / 2)
                 scene.add(object);
 
             });
 
-        }); 
+        });
 
     }
 
 
-
-
-
-
-    </script>
+</script>
 </body>
 </html>
