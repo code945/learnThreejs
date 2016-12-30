@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Three.js Geometry Texture</title>
+    <title>Three.js Model Loader</title>
     <style>
         body {
             margin: 0;
@@ -24,8 +24,6 @@
     var mtlLoader = new THREE.MTLLoader();
     var objLoader = new THREE.OBJLoader();
 
-    var floorData;
-    var resizeRatio = 50;
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
     camera.position.set(0, 500, 500);
