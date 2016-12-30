@@ -1,0 +1,81 @@
+<html>
+<head>
+    <title>Three.js Geometry Texture</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/OBJLoader.js"></script>
+    <script src="js/MTLLoader.js"></script>
+    <script src="js/jQuery-2.1.4.min.js"></script>
+</head>
+<body>
+
+    <script>
+         
+    var mtlLoader = new THREE.MTLLoader();
+    var objLoader = new THREE.OBJLoader();
+
+    var floorData;
+    var resizeRatio = 50;
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera( 60, window.innerWidth/window.innerHeight, 0.1, 10000 );
+    camera.position.set(0,500,500);
+
+    var renderer = new THREE.WebGLRenderer({antialias: true });
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setClearColor(0x177FB3,1);
+    document.body.appendChild( renderer.domElement );
+
+
+    var lightAm = new THREE.AmbientLight("#DFDFDF", 1);
+    scene.add(lightAm);
+
+    var lightDirect = new THREE.DirectionalLight(0xffffff, 0.6);//设置平行光源
+    lightDirect.position.set(50, 200, -50);//设置光源向量
+    scene.add(lightDirect);
+
+    var controls = new THREE.OrbitControls(camera , renderer.domElement);
+
+    loadModel("obj/humvee/", "humvee", { x: 0, y: 0, z: 0 });
+    render();
+
+    function render() {
+        requestAnimationFrame( render );
+        renderer.render(scene, camera);
+    };
+
+    function loadModel(folder,name,position)
+    {
+        mtlLoader.setBaseUrl(folder);
+        mtlLoader.setPath(folder);
+        mtlLoader.load(name + ".mtl", function (materials) {  
+            objLoader.setMaterials(materials); 
+            objLoader.load(folder+ name + ".obj", function (object) {
+
+                object.position.set(position.x, position.y, position.z);
+                object.rotateX(-Math.PI/2)
+                scene.add(object);
+
+            });
+
+        }); 
+
+    }
+
+
+
+
+
+
+    </script>
+</body>
+</html>
