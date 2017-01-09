@@ -1,0 +1,148 @@
+<html>
+<html>
+<head>
+    <title>Three.js Geometry Texture</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        
+        @keyframes ledZoom
+        {
+            0%   {transform: scale(0.8,0.8)} 
+            50%  {transform: scale(1.1,1.1)} 
+            100% {transform: scale(0.8,0.8)}
+        }
+        .zoom {
+            animation-name: ledZoom;
+            animation-duration: 2s;
+            animation-timing-function: linear; 
+            animation-iteration-count: infinite;  
+        }
+
+    </style>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script> 
+    <script src="js/jQuery-2.1.4.min.js"></script>
+</head>
+<body>
+    <div id="hudLayer">
+
+    </div>
+    <script> 
+        var refreshLedPositionTimer;
+        var resizeRatio = 50; 
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+        camera.position.set(0, 50, 50);
+
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x177FB3, 1);
+        document.body.appendChild(renderer.domElement);
+
+
+        var lightAm = new THREE.AmbientLight("#DFDFDF", 1);
+        scene.add(lightAm);
+
+        var lightDirect = new THREE.DirectionalLight(0xffffff, 0.6);
+        lightDirect.position.set(50, 200, -50);
+        scene.add(lightDirect);
+
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.addEventListener('end', function () {
+            refreshLedPositionTimer = setTimeout(doRefreshLedPosition, 800)
+        });
+
+        controls.addEventListener('start', function () {
+            clearTimeout(refreshLedPositionTimer);
+            document.getElementById("alarm").style.display = "none";
+        });
+
+        addCube();
+        addGround();
+        
+        render();
+        $("#hudLayer").append('<img src="images/led_red.png" class="zoom" style="position: absolute;display:none" id="alarm">');
+        refreshLedPositionTimer = setTimeout(doRefreshLedPosition, 800);
+
+        function render() {
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        };
+         
+         
+        function doRefreshLedPosition() {
+            //get cube by name
+            var obj = this.scene.getObjectByName("cube");
+            if (obj) {
+                var position = toScreenPosition(obj);
+                document.getElementById("alarm").style.display = "";
+                document.getElementById("alarm").style.left = (position.x - 16) + 'px';
+                document.getElementById("alarm").style.top = (position.y - 32) + 'px';
+            }
+        }
+
+
+        function toScreenPosition(obj) {
+            var vector = new THREE.Vector3();
+            //calculate screen half size
+            var widthHalf = 0.5 * renderer.context.canvas.width;
+            var heightHalf = 0.5 * renderer.context.canvas.height;
+            //get 3d object position
+            obj.updateMatrixWorld();
+            vector.setFromMatrixPosition(obj.matrixWorld);
+            //translate to top ��assume that position in the middle of the mesh��
+            vector.y = vector.y * 2;
+            vector.project(this.camera);
+            //get 2d position on screen
+            vector.x = (vector.x * widthHalf) + widthHalf;
+            vector.y = -(vector.y * heightHalf) + heightHalf;
+
+            return {
+                x: vector.x,
+                y: vector.y
+            };
+
+        }
+
+
+
+
+
+        function addCube() {
+            var geometry = new THREE.BoxGeometry(5, 5, 5);
+            var material = new THREE.MeshPhongMaterial({ color: '#6546BC' });
+            var cube = new THREE.Mesh(geometry, material);
+            cube.position.set(10, 2.5, 10);
+            cube.name = "cube";
+            scene.add(cube);
+        }
+
+        function addGround() {
+            //ground
+            var texture = new THREE.TextureLoader().load("images/f2.jpg");
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(20, 20);
+
+
+            var geometry = new THREE.PlaneGeometry(150, 150, 1);
+            var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+            var plane = new THREE.Mesh(geometry, material);
+            plane.rotateX(-Math.PI / 2);
+            plane.receiveShadow = true;
+            scene.add(plane);
+        }
+
+
+    </script>
+</body>
+</html>
