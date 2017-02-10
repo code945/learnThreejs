@@ -1,0 +1,362 @@
+﻿<html>
+<head>
+    <title>Demo</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" />
+    <script src="js/jQuery-2.1.4.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/three.min.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/DragControls.js"></script>
+    <script src="js/Tween.js"></script>
+</head>
+<body>
+    <div style="position:absolute;left:0;height: 100%;width:300px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Device List</h3>
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" draggable="true" data-type="rack" ondragend="dragend(event)" ondragstart="drag(event)">Rack</li>
+                <li class="list-group-item" draggable="true" data-type="server" ondragend="dragend(event)" ondragstart="drag(event)">Server</li>
+                <li class="list-group-item" draggable="true" data-type="cube" ondragend="dragend(event)" ondragstart="drag(event)">Cube</li>
+            </ul>
+        </div>
+
+
+    </div>
+
+    <div id="container" style="height: 100%;position: absolute; left: 300px;right: 0; "> </div>
+    <div id="overlay" ondrop="drop(event)" ondragover="allowDrop(event)" style="display:none;height: 100%;position: absolute; left: 300px;right: 0; "> </div>
+    <script>
+
+        var dragObjects = [];
+        function allowDrop(ev) {
+            if (checkPosition(ev.layerX, ev.layerY)) {
+                ev.preventDefault();
+            }
+        }
+
+        function drag(ev) {
+            ev.dataTransfer.setData("text", ev.target.getAttribute("data-type"));
+            ev.dataTransfer.setDragImage(getDragCanvas(), 15, 45);
+            document.getElementById("overlay").style.display = "";
+        }
+
+        function dragend(ev) {
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function drop(ev) {
+            ev.preventDefault();
+            var data = ev.dataTransfer.getData("text");
+            dropOnPlan(ev.layerX, ev.layerY, data);
+        }
+
+
+        function getDragCanvas() {
+
+            var dragIcon = document.createElement('img');
+            var canvas = document.createElement("canvas");
+            canvas.width = canvas.height = 50;
+
+            var ctx = canvas.getContext("2d");
+
+            ctx.lineWidth = 2;
+            ctx.moveTo(0, 0);
+            ctx.lineTo(15, 45);
+            ctx.lineTo(30, 0);
+            ctx.lineTo(15, 15);
+            ctx.lineTo(0, 0);
+            ctx.fillStyle = '#2891FF';
+            ctx.fill();
+
+            dragIcon.src = canvas.toDataURL();
+            return dragIcon;
+        }
+
+        var raycaster = new THREE.Raycaster();
+        var mouse = new THREE.Vector2();
+
+        var plane;
+        var container = document.getElementById("container");
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        camera.position.set(0, 50, 50);
+
+        var renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        renderer.setClearColor(0x177FB3, 1);
+        container.appendChild(this.renderer.domElement);
+
+        var lightAm = new THREE.AmbientLight("#DFDFDF", 0.4);
+        scene.add(lightAm);
+
+
+        var light = new THREE.DirectionalLight(0xF5F5F5, 0.2);//设置平行光源
+        light.position.set(-200, 200, 200);//设置光源向量
+        scene.add(light);// 追加光源到场景
+
+        var light2 = new THREE.DirectionalLight(0xF5F5F5, 0.5);//设置平行光源
+        light2.position.set(200, 200, -200);//设置光源向量
+        scene.add(light2);// 追加光源到场景
+
+        var spotLight = new THREE.SpotLight(0xffffff, 1);
+        spotLight.position.set(200, 1000, -100);
+        spotLight.castShadow = true;
+        spotLight.angle = Math.PI / 4;
+        spotLight.penumbra = 2;
+        spotLight.distance = 1190;
+        spotLight.shadow.mapSize.width = 1024;
+        spotLight.shadow.mapSize.height = 1024;
+        spotLight.shadow.camera.near = 1;
+        spotLight.shadow.camera.far = 1190;
+        scene.add(spotLight);
+
+        addFloor();
+
+
+
+        var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+
+
+        var dragControls = new THREE.DragControls(dragObjects, camera, renderer.domElement, plane);
+        dragControls.addEventListener('dragstart', function (event) { controls.enabled = false; });
+        dragControls.addEventListener('dragend', function (event) { controls.enabled = true; });
+
+        var render = function () {
+            requestAnimationFrame(render);
+
+
+            TWEEN.update();
+
+
+            renderer.render(scene, camera);
+        };
+        render();
+
+
+        function checkPosition(x, y) {
+            mouse.x = (x / renderer.domElement.width) * 2 - 1;
+            mouse.y = -(y / renderer.domElement.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects([plane], true);
+            if (intersects.length > 0) {
+                return true
+            }
+            else return false;
+        }
+
+        function dropOnPlan(x, y, data) {
+            mouse.x = (x / renderer.domElement.width) * 2 - 1;
+            mouse.y = -(y / renderer.domElement.height) * 2 + 1;
+            raycaster.setFromCamera(mouse, camera);
+            var intersects = raycaster.intersectObjects([plane], true);
+            if (intersects.length > 0) {
+                if (data == "cube") {
+                    var cube = new THREE.Mesh(new THREE.CubeGeometry(1, 1, 1), new THREE.MeshPhongMaterial({ color: 'gray' }));
+                    cube.data = { dragable: true };
+                    cube.position.set(intersects[0].point.x, 0, intersects[0].point.z);
+                    scene.add(cube);
+                    dragObjects.push(cube);
+                }
+                else if (data == "rack") {
+                    var rack = getRackMesh();
+                    rack.position.set(intersects[0].point.x, 0, intersects[0].point.z);
+                    scene.add(rack);
+                    dragObjects.push(rack);
+                }
+                else if (data == "server") {
+                    var server = getServer();
+                    server.position.set(intersects[0].point.x, 0, intersects[0].point.z);
+                    scene.add(server);
+                    dragObjects.push(server);
+                }
+            }
+        }
+
+
+
+        function addFloor() {
+            var texture = new THREE.TextureLoader().load("images/f2.jpg");
+            texture.wrapS = THREE.RepeatWrapping;
+            texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(150, 150);
+
+
+            var geometry = new THREE.PlaneGeometry(250, 250, 1);
+            var material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.DoubleSide });
+            plane = new THREE.Mesh(geometry, material);
+            plane.translateY(-0.5);
+            plane.rotateX(-Math.PI / 2);
+            scene.add(plane);
+        }
+
+
+
+
+        function getRackMesh() {
+            var rack_width = 5, rack_height = 17, rack_depth = 5;
+            var rack = new THREE.Object3D();
+            var front_left = getRackPart();
+            front_left.position.x = -rack_width / 2;
+            front_left.position.z = rack_depth / 2;
+            front_left.castShadow = true;
+            //scene.add(front_left);
+
+            var front_right = getRackPart();
+            front_right.position.x = rack_width / 2;
+            front_right.position.z = rack_depth / 2;
+            front_right.rotateZ(-Math.PI);
+            front_right.castShadow = true;
+            //scene.add(front_right);
+
+
+            var rear_left = getRackPart();
+            rear_left.position.z = -rack_depth / 2;
+            rear_left.position.x = -rack_width / 2;
+            rear_left.rotateX(Math.PI);
+            rear_left.castShadow = true;
+            ////scene.add(rear_left);
+
+            var rear_right = getRackPart();
+            rear_right.position.z = -rack_depth / 2;
+            rear_right.position.x = rack_width / 2;
+            rear_right.rotateX(Math.PI);
+            rear_right.rotateZ(-Math.PI);
+            rear_right.castShadow = true;
+            //scene.add(rear_right);
+
+           
+
+
+
+            var topGeo = new THREE.PlaneGeometry(rack_width, rack_depth);
+
+            topGeo.rotateX(-Math.PI / 2);
+            topGeo.translate(0, rack_height + 0.01, 0);
+
+
+            var bottomGeo = new THREE.PlaneGeometry(rack_width, rack_depth);
+            bottomGeo.rotateX(-Math.PI / 2);
+            bottomGeo.translate(0, -0.01, 0);
+
+            var leftGeo = new THREE.PlaneGeometry(rack_depth, rack_height);
+            leftGeo.rotateY(-Math.PI / 2);
+            leftGeo.translate(-rack_width / 2 + 0.01, rack_height / 2, 0);
+
+            var rightGeo = new THREE.PlaneGeometry(rack_depth, rack_height);
+            rightGeo.rotateY(-Math.PI / 2);
+            rightGeo.translate(rack_width / 2 - 0.01, rack_height / 2, 0);
+
+            topGeo.merge(bottomGeo)
+            topGeo.merge(leftGeo)
+            topGeo.merge(rightGeo)
+
+            var m = new THREE.MeshPhongMaterial({ color: 0x3D3D3D, side: THREE.DoubleSide, emissive: 0x000000, specular: 0x111111, shininess: 100 });
+            var toparea = new THREE.Mesh(topGeo, m);
+            toparea.castShadow = true;
+
+            //scene.add(toparea);
+            rack.add(toparea); 
+            rack.add(front_left);
+            rack.add(front_right);
+            rack.add(rear_left);
+            rack.add(rear_right);
+
+            dragObjects.push(toparea);
+            dragObjects.push(front_left);
+            dragObjects.push(front_right);
+            dragObjects.push(rear_left);
+            dragObjects.push(rear_right);
+
+            rack.castShadow = true;
+            rack.data = { dragable: true }; 
+            return rack;
+        }
+
+        function getRackPart() {
+            var w = 0.7;
+            var h = 17;
+            var d = 0.2
+
+            var g1 = new THREE.BoxGeometry(w, h, d);
+
+            var g2 = g1.clone();
+            g2.rotateY(-Math.PI / 2);
+            g2.translate(0, 0, -w / 2)
+
+
+            g1.translate(w / 2 - d / 2, 0, 0)
+            g1.merge(g2);
+
+
+
+            var material = new THREE.MeshPhongMaterial({ color: 0x3D3D3D });
+            var cube1 = new THREE.Mesh(g1, material);
+            cube1.position.y = h / 2;
+
+
+
+            return cube1;
+        }
+
+
+        function getServer() {
+            var serverSize = { width: 4.5, height: 1, depth: 4.8 };
+
+
+            var materials = [
+                new THREE.MeshBasicMaterial({ color: 0x808080 }), // right
+                new THREE.MeshBasicMaterial({ color: 0x808080 }), // left
+                new THREE.MeshBasicMaterial({ color: 0x808080 }), // top
+                new THREE.MeshBasicMaterial({ color: 0x808080 }), // bottom
+                new THREE.MeshBasicMaterial({ color: 0x808080 }), // back
+                new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('images/rear.png'), side: THREE.DoubleSide })  // front
+            ];
+
+
+
+            var serverFront = new THREE.Mesh(
+                new THREE.PlaneGeometry(serverSize.width, serverSize.height, 1),
+                new THREE.MeshBasicMaterial({ map: THREE.ImageUtils.loadTexture('images/front.png'), side: THREE.DoubleSide })
+                );
+            serverFront.position.set(0, 0, serverSize.depth / 2 + 0.02);
+
+            var serverCube = new THREE.Mesh(
+                new THREE.BoxGeometry(serverSize.width - 0.8, serverSize.height - 0.2, serverSize.depth),
+                new THREE.MultiMaterial(materials)
+                );
+             
+            var sermesh = new THREE.Object3D();
+            sermesh.add(serverFront);
+            sermesh.add(serverCube);
+
+
+
+
+            //sermesh.position.set(0, (row * (serverSize.height + 0.3)), 0.5);
+            dragObjects.push(serverFront);
+            dragObjects.push(serverCube);
+            sermesh.data = { dragable: true };
+            return sermesh;
+        }
+
+
+
+
+
+    </script>
+</body>
+</html>
