@@ -55,6 +55,10 @@
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
+    controls.minPolarAngle = Math.PI / 2 *1.05;
+    controls.maxPolarAngle = Math.PI / 2 * 1.05;
+    controls.enablePan = false;
+
     loadModel("obj/model/", "DPDK", {x: 0, y: -100, z: 0});
     render();
 
