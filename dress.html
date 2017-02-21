@@ -26,7 +26,7 @@
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0,  50, 200);
+    camera.position.set(0,  -80, 250);
 
     var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -55,9 +55,10 @@
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    controls.minPolarAngle = Math.PI / 2 *1.05;
-    controls.maxPolarAngle = Math.PI / 2 * 1.05;
+    controls.minPolarAngle = Math.PI / 2 *1.2;
+    controls.maxPolarAngle = Math.PI / 2 * 1.2;
     controls.enablePan = false;
+    controls.enableZoom = false;
 
     loadModel("http://static.linhongxu.com/model/dress/", "DPDK", {x: 0, y: -100, z: 0});
     render();
