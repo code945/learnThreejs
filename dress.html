@@ -26,11 +26,11 @@
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0, 400, 500);
+    camera.position.set(0,  50, 200);
 
     var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(0x177FB3, 1);
+    renderer.setClearColor(0x9C9C9C, 1);
     document.body.appendChild(renderer.domElement);
 
 
@@ -38,20 +38,24 @@
     scene.add(lightAm);
 
     var lightDirect = new THREE.DirectionalLight(0xffffff, 1);//����ƽ�й�Դ
-    lightDirect.position.set( 0, 5,5);//���ù�Դ����
+    lightDirect.position.set( 0, 0,100);//���ù�Դ����
     scene.add(lightDirect);
 
+    var lightDirect2 = new THREE.DirectionalLight(0xffffff, 1);//����ƽ�й�Դ
+    lightDirect2.position.set(0, 0, -100);//���ù�Դ����
+    scene.add(lightDirect2);
 
-    var lightPoint = new THREE.PointLight(0xffffff, 1);
-    lightPoint.position.set(-50, 80, 0);
-    scene.add(lightPoint);
 
-    var lightPointHelper = new THREE.PointLightHelper(lightPoint);
+    //var lightPoint = new THREE.PointLight(0xffffff, 5);
+    //lightPoint.position.set(0, 100, 0);
+    //scene.add(lightPoint);
+
+    //var lightPointHelper = new THREE.PointLightHelper(lightPoint);
     //scene.add(lightPointHelper);
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    loadModel("obj/model/", "DPDK", {x: 0, y: 0, z: 0});
+    loadModel("obj/model/", "DPDK", {x: 0, y: -100, z: 0});
     render();
 
     function render() {
