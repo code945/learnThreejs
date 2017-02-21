@@ -26,7 +26,7 @@
 
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
-    camera.position.set(0,  -80, 250);
+    camera.position.set(0,  -40, 250);
 
     var renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -55,8 +55,8 @@
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
 
-    controls.minPolarAngle = Math.PI / 2 *1.2;
-    controls.maxPolarAngle = Math.PI / 2 * 1.2;
+    controls.minPolarAngle = Math.PI / 2 *1.1;
+    controls.maxPolarAngle = Math.PI / 2 * 1.1;
     controls.enablePan = false;
     controls.enableZoom = false;
 
