@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <title>模型查看</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="../css/bootstrap-theme.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="../css/font-awesome.min.css">
+    <style>
+        html, body {
+            margin: 0px;
+            overflow: hidden;
+            background-color: #575757;
+        }
+    </style>
+</head>
+<body>
+<div id="container" style="height: 100%;position: absolute; top: 0; left: 0;right: 0;">
+</div>
+<div id="loadingContainer" style="position: absolute;left:30%;top: 50%;width:40%;">
+    <div class="progress" style="height: 10px;">
+        <div id="progress-bar" class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0"
+             aria-valuemax="100" aria-valuenow="0"
+             style="min-width: 2em;">
+            <span id="percentage"></span>
+        </div>
+    </div>
+    <div style="color: #eee; text-align: center;">
+        XXXX人的作品
+    </div>
+</div>
+
+<div id="toolBar" style="position: absolute; bottom: 0; left: 0;right: 0;   ">
+    <div class="alert alert-warning alert-dismissible" style="margin-bottom: 0;" role="alert">
+        <strong>说明!</strong> 文字描述 you're not looking too good.
+    </div>
+</div>
+
+<div id="location" style="position: absolute; top: 0; left: 0; padding: 10px; ">
+     <p style="border: 1px solid #e8e8e8;padding: 10px; color:#e8e8e8">
+        XXXXX 地方的东西
+     </p>
+</div>
+
+<script src="../js/jQuery-2.1.4.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/three.min.js"></script> 
+<script src="../js/hammer.min.js"></script> 
+<script src="../js/TouchControls.js"></script>
+<script src="../js/BinaryLoader.js"></script>
+<script src="ShowModel.js"></script>
+
+<script>
+    var lights = [
+        ["#eee", 0.8],//top
+        ["#eee", 0.8],//bottom
+        ["#eee", 0.1],//left
+        ["#eee", 0.1],//right
+        ["#eee", 0.6],//front
+        ["#eee", 0.6],//rear
+        ["#eee", 0.8]//env
+     ] ;
+
+   var loader = new ModelLoader("../show/", "converted",lights);
+
+</script>
+
+
+</body>
+</html>
