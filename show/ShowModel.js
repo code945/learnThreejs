@@ -48,9 +48,6 @@ ModelLoader = function (dir, name,lights) {
         controls.update();
         renderer.render(scene, camera);
     }
-    ;
-
-    loadModel(dir, name, {x: 0, y: 0, z: 0});
 
     function loadModel(folder, name, position) {
         var manager = new THREE.LoadingManager();
