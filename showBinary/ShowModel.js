@@ -49,29 +49,24 @@ ModelLoader = function (dir, name,lights) {
         renderer.render(scene, camera);
     }
 
+    var loadFiles = 0;
     function loadModel(folder, name, position) {
         var manager = new THREE.LoadingManager();
         manager.onProgress = function (item, loaded, total) {
+            loadFiles ++;
             console.log(item, loaded, total);
         };
 
         var onProgress = function (xhr) {
             if (xhr.lengthComputable) {
-                var percentComplete = xhr.loaded / xhr.total * 100;
+                var percentComplete = 50 *loadFiles  + xhr.loaded / xhr.total * 50;
                 $("#progress-bar").css("width", Math.round(percentComplete, 2) + '%');
-                //$("#percentage").text(Math.round(percentComplete, 2) + '%');
-
                 console.log(Math.round(percentComplete, 2) + '% downloaded');
             }
-            // else
-            // {
-            //     $("#progress-bar").css("width", '50%');
-            //     //$("#percentage").text('50%');
-            // }
         };
 
 
-        var binLoader = new THREE.BinaryLoader();
+        var binLoader = new THREE.BinaryLoader(manager);
         binLoader.load( folder + name + ".js", createScene, onProgress );
 
         function createScene( geometry, materials ) {
