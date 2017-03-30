@@ -42,15 +42,17 @@ ModelLoader = function (dir,lights) {
 
     render();
 
+
+    var dateFrom;
+    var dateTo;
     this.loadModel = function (modelname) {
-        scene.children
+        dateFrom = new Date();
         for(var i = scene.children.length;i>0;i--)
         {
-            var obj = scene.children[i];
+            var obj = scene.children[i-1];
             scene.remove(obj);
+            obj = null;
         }
-        if(targetModel)
-            scene.remove(targetModel);
         loadModel(dir, modelname, {x: 0, y: 0, z: 0});
     };
 
@@ -67,12 +69,18 @@ ModelLoader = function (dir,lights) {
             console.log(item, loaded, total);
         };
 
+        manager.onLoad = function () {
+            dateTo =  new Date();
+            var date3=dateTo.getTime() - dateFrom.getTime();  //时间差的毫秒数
+            $("#loadTips").text("加载时间（毫秒）："+date3);
+        };
+
+
         var onProgress = function (xhr) {
             if (xhr.lengthComputable) {
                 var percentComplete = xhr.loaded / xhr.total * 100;
                 $("#progress-bar").css("width", Math.round(percentComplete, 2) + '%');
                 //$("#percentage").text(Math.round(percentComplete, 2) + '%');
-
                 console.log(Math.round(percentComplete, 2) + '% downloaded');
             }
             else
@@ -89,7 +97,6 @@ ModelLoader = function (dir,lights) {
             objLoader.setMaterials(materials);
             objLoader.load(folder + name + ".obj", function (object) {
                 object.position.set(position.x, position.y, position.z);
-                targetModel = object;
                 scene.add(object);
                 fitCameraLight(object);
                 $("#progress-bar").css("width", '100%');
