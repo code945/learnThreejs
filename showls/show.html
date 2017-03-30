@@ -18,6 +18,223 @@
             width: 100%;
             height: 100%;
         }
+
+
+        .test {
+            background: #fff;
+            opacity: 0.8;
+            filter: alpha(opacity = 80);
+            -ms-filter: "alpha(opacity=80)";
+        }
+
+        .topbar {
+            margin: 20;
+        }
+
+        .rightbar {
+            top: auto;
+            right: 0px;
+            position: fixed;
+            margin: 5px;
+            padding: 0px;
+        }
+
+        .leftbar {
+            margin: 5px;
+            padding: 5px;
+            position: absolute;
+            z-index: 2;
+            display: none;
+        }
+
+        .pull-leftbar-header {
+            width: 160px;
+            margin: 0px;
+            padding: 0px;
+            background: #e7e7e7;
+            float: left;
+        }
+
+        .pull-left-body {
+            width: 160px;
+            overflow: auto;
+            overflow-x: hidden;
+            max-height: 320px;
+        }
+
+        .pull-leftbar-header ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .pull-leftbar-header li {
+            padding: 5px 10px;
+            border: #b2d7f7 1px solid;
+            float: left;
+        }
+
+        .pull-leftbar-header li img {
+            width: 25px;
+        }
+
+        .bottombar {
+            max-width: 600px;
+            padding: 10px 29px 10px;
+            margin: 0 auto 20px;
+            border: 1px solid #e5e5e5;
+            border-radius: 5px;
+        }
+
+        .clear_float {
+            clear: both;
+        }
+
+        .rt-sus {
+            right: 5px;
+            top: 5px;
+            border: #b2d7f7 1px solid;
+            z-index: 2;
+        }
+
+        .rt-sus ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .rt-sus li {
+            padding: 5px 10px;
+            border-bottom: #b2d7f7 1px solid;
+            position: relative;
+        }
+
+        .rt-sus li.last {
+            border-bottom-width: 0;
+        }
+
+        .rt-sus li img {
+            width: 25px;
+        }
+
+        .pull-top {
+            position: absolute;
+            z-index: 2;
+        }
+
+        .pull-bottom {
+            MARGIN-RIGHT: auto;
+            MARGIN-LEFT: auto;
+            width: 290px;
+            float: left;
+            z-index: 2;
+        }
+
+        .pull-bottom ul {
+            margin: 2px;
+            padding: 0;
+            list-style: none;
+        }
+
+        .pull-bottom li {
+            padding: 5px 10px;
+            position: relative;
+            border: #b2d7f7 1px solid;
+            float: left;
+        }
+
+        .pull-bottom li img {
+            width: 25px;
+        }
+
+        .ul-dropmenu {
+            border: #eee 1px solid;
+            padding: 5px;
+            width: 80px;
+            position: absolute;
+            left: -80px;
+            top: 0;
+            display: none;
+        }
+
+        .ul-dropmenu a.gray-line {
+            border-bottom: #ddd 1px solid;
+            padding: 2px 0;
+            width: 100%;
+            margin: 0;
+        }
+
+        .ul-dropmenu a {
+            padding: 5px;
+            float: left;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        .ul-dropmenu a.active {
+            /* border: #008fca 1px solid; */
+            background: -webkit-linear-gradient(#d6ebfe, #a3d3fd);
+            /* Safari 5.1 - 6.0 */
+            background: -o-linear-gradient(#d6ebfe, #a3d3fd);
+            /* Opera 11.1 - 12.0 */
+            background: -moz-linear-gradient(#d6ebfe, #a3d3fd);
+            /* Firefox 3.6 - 15 */
+            background: linear-gradient(#d6ebfe, #a3d3fd);
+            border-radius: 5px;
+        }
+
+        .ul-dropmenu a img {
+            width: 22px;
+        }
+
+        .bg-blue {
+            background: #94caf3;
+        }
+
+        .bg-yellow {
+            background: yellow;
+        }
+
+        .rt-line {
+            width: 98%;
+            height: 1px;
+            float: left;
+            margin-left: 1%;
+            background: #eee;
+        }
+
+        .icon-triangle {
+            position: absolute;
+            left: 0px;
+            bottom: -5px;
+            display: inline-block;
+        }
+        #myProgress {
+            position: absolute;
+            display: none;
+            width: 100%;
+            height: 30px;
+            background-color: darkgray;
+        }
+
+        #myBar {
+            position: absolute;
+            width: 1%;
+            height: 100%;
+            background-color: dodgerblue;
+        }
+
+        #label {
+            text-align: center;
+            line-height: 30px;
+            color: white;
+            filter: alpha(opacity=100);
+            -moz-opacity: 1;
+            opacity: 1;
+        }
+
+
+
     </style>
 </head>
 <body>
@@ -47,6 +264,64 @@
     <p id="loadTips" style="color:#e8e8e8"></p>
 
 </div>
+
+
+
+<div class="test rightbar pull-right" style="">
+    <div class="rt-sus">
+        <ul>
+            <li class="MRS bg-yellow">
+                <a id="RestoreView" href="javascript:void(0)"><img src="../images/sview-icon1.png" alt="复位" title="复位"></a>
+            </li>
+            <li class="MRS">
+                <a href="javascript:void(0)" id="lst"><img src="../images/button_view.png" alt="视图" title="视图"></a>
+                <em class="icon-triangle"><img src="../images/icon-triangle.png" alt="旋转模式" width="6" height="6" style="width: 6px;height: 6px;"></em>
+                <div class="test ul-dropmenu">
+                    <a href="javascript:void(0)" id="showwireframe" class="viewAngle_main"><img src="../images/button_solid_wire.png" title="线框图形模式"></a>
+                    <a href="javascript:void(0)" id="onlyshowwireframe" class="viewAngle_main"><img src="../images/button_wire.png" title="线框模式"></a>
+                    <hr style="clear:both;margin:0px; height:1px;border:none;border-top:2px dotted #185598;">
+                    <a href="javascript:void(0)" id="front" class="viewAngle bg-blue"><img src="../images/button_front.png" title="正视图"></a>
+                    <a href="javascript:void(0)" id="back" class="viewAngle"><img src="../images/button_behind.png" title="后视图"></a>
+                    <a href="javascript:void(0)" id="left" class="viewAngle"><img src="../images/button_left.png" title="左视图"></a>
+                    <a href="javascript:void(0)" id="right" class="viewAngle"><img src="../images/button_right.png" title="右视图"></a>
+                    <a href="javascript:void(0)" id="top" class="viewAngle"><img src="../images/button_top.png" title="俯视图"></a>
+                    <a href="javascript:void(0)" id="bottom" class="viewAngle"><img src="../images/button_bottom.png" title="仰视图"></a>
+                    <a href="javascript:void(0)" id="isometric" class="viewAngle"><img src="../images/button_zhouce.png" title="轴视图"></a>
+                </div>
+            </li>
+            <li class="MRS" id="assembly">
+                <a href="javascript:void(0)"><img src="../images/button_assembly.png" alt="装配" title="装配"></a>
+            </li>
+            <li class="MRS" id="lipq">
+                <a id="pq" href="javascript:void(0)"><img src="../images/sview-icon5.png" alt="剖切" title="剖切"></a>
+                <em class="icon-triangle"><img src="../images/icon-triangle.png" alt="旋转模式" width="6" height="6" style="width: 6px;height: 6px;"></em>
+                <div class="test ul-dropmenu" style="left: -210px; width: 210px; padding: 0px;z-index: 9999;">
+                    <a href="javascript:void(0)" id="yzsection" class="section_xyz"><img src="../images/button_yzsection.png" title="yz面剖切"></a>
+                    <a href="javascript:void(0)" id="xysection" class="section_xyz"><img src="../images/button_xysection.png" title="xy面剖切"></a>
+                    <a href="javascript:void(0)" id="xzsection" class="section_xyz bg-blue"><img src="../images/button_zxsection.png" title="zx面剖切"></a>
+                    <a href="javascript:void(0)" class="section_reversal"><img src="../images/button_sectionreversal.png" title="剖切反向"></a>
+                    <a href="javascript:void(0)" class="section_plane"><img src="../images/button_showsectionplane.png" title="剖切面显隐"></a>
+                    <a href="javascript:void(0)" class="section_cappingPlane bg-blue"><img src="../images/sview_section_showcappingplane.png" title="盖面显隐"></a>
+                    <input type="range" style="visible:none;margin: 20px 10px; width: 90%;z-index: 9999;" id="section_percentage" min="0" step="0.01" max="1" value="0">
+                </div>
+            </li>
+            <li class="MRS">
+                <a href="javascript:void(0)"><img src="../images/button_explosive.png" alt="爆炸图" title="爆炸图"></a>
+                <em class="icon-triangle"><img src="../images/icon-triangle.png" alt="旋转模式" width="6" height="6" style="width: 6px;height: 6px;"></em>
+                <div class="test ul-dropmenu" style="left: -170px; width: 170px; padding: 0px;z-index: 9999;">
+                    <a href="javascript:void(0)" id="explosive_center" class="explosive bg-blue"><img src="../images/explosive_global.png" title="中心爆炸"></a>
+                    <a href="javascript:void(0)" id="explosive_by_x" class="explosive"><img src="../images/explosive_three_dimensional.png" title="x轴线性爆炸"></a>
+                    <a href="javascript:void(0)" id="explosive_by_y" class="explosive"><img src="../images/explosive_plane.png" title="y轴线性爆炸"></a>
+                    <input type="range" style="visible:none;margin: 20px 10px; width: 90%;z-index: 9999;" id="explosive_percentage" min="0" step="0.01" max="1" value="0">
+                </div>
+            </li>
+          </ul>
+    </div>
+</div>
+
+
+
+
 
 <script src="../js/jQuery-2.1.4.min.js"></script>
 <script src="../js/bootstrap.min.js"></script>
