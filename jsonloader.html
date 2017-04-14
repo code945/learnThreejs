@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Three.js Model Loader</title>
+    <style>
+        body {
+            margin: 0;
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script src="js/three.js"></script>
+    <script src="js/OrbitControls.js"></script>
+    <script src="js/jQuery-2.1.4.min.js"></script>
+</head>
+<body>
+
+<script>
+
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
+    camera.position.set(0, 500, 500);
+
+    var renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x177FB3, 1);
+    document.body.appendChild(renderer.domElement);
+
+
+    var lightAm = new THREE.AmbientLight("#DFDFDF", 1);
+    scene.add(lightAm);
+
+    var lightDirect = new THREE.DirectionalLight(0xffffff, 0.6);//����ƽ�й�Դ
+    lightDirect.position.set(50, 200, -50);//���ù�Դ����
+    scene.add(lightDirect);
+
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+    getJson();
+    render();
+
+    function render() {
+        requestAnimationFrame(render);
+        renderer.render(scene, camera);
+    }
+    ;
+
+    function getJson() {
+        var color = 0xC3C3C3;
+        var textureLeft = null;
+        var textureRight= null;
+        var width = 120, height = 180, depth = 50;
+        var t1 = new THREE.TextureLoader().load("images/left_door.jpg",function (textureL){
+            textureLeft = textureL;
+            var t2 = new THREE.TextureLoader().load("images/right_door.jpg",function (textureR) {
+                textureRight = textureR;
+
+                var rightMat = new THREE.MeshPhongMaterial({ color: color, });
+                var leftMat = new THREE.MeshPhongMaterial({ color: color });
+                var topMat = new THREE.MeshPhongMaterial({ color: color });
+
+                var bottomMat = new THREE.MeshPhongMaterial({ color: color });
+                var frontMat = new THREE.MeshPhongMaterial({ map: textureLeft});
+                var backMat = new THREE.MeshPhongMaterial({ map: textureRight });
+
+                var leftMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, frontMat, backMat]);
+                var rightMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, backMat, frontMat]);
+
+
+                var geoLeft = new THREE.BoxGeometry(width / 2, height, depth);
+                geoLeft.translate(width / 4, 0, 0);
+                var leftPart = new THREE.Mesh(geoLeft, leftMaterial);
+                leftPart.position.set(-width / 2, 0, 0);
+                leftPart.userData.objType = "doorPart";
+
+                var geoRight = new THREE.BoxGeometry(width / 2, height, depth);
+                geoRight.translate(-width / 4, 0, 0);
+                var rightPart = new THREE.Mesh(geoRight, rightMaterial);
+                rightPart.position.set(width / 2, 0, 0);
+                rightPart.userData.objType = "doorPart";
+
+
+                var topPart = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.5, height), new THREE.MeshPhongMaterial({ color: color, side: THREE.DoubleSide }));
+                topPart.rotateX(-Math.PI / 2);
+                topPart.position.set(0, height / 2, 0);
+
+                var cube = new THREE.Group();
+                cube.add(leftPart);
+                cube.add(rightPart);
+                cube.add(topPart);
+
+                scene.add( cube );
+                console.log(cube.toJSON());
+//                var loader = new THREE.ObjectLoader();
+//                var obj = loader.parse( mesh.toJSON(), function ( obj ) {
+//                    scene.add( obj );
+//                } );
+            });
+
+
+        });
+
+
+
+
+
+    }
+
+
+
+</script>
+</body>
+</html>

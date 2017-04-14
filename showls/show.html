@@ -5,8 +5,6 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <title>模型查看</title>
     <link href="../css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="../css/bootstrap-theme.min.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="../css/font-awesome.min.css">
     <style>
         html, body {
             margin: 0px;
@@ -28,7 +26,7 @@
         }
 
         .topbar {
-            margin: 20;
+            margin: 20px;
         }
 
         .rightbar {
@@ -235,21 +233,22 @@
 
 
 
+        .expand {
+            height:2px;
+            margin:2px 0;
+            background: #437fcd;
+            position:absolute;
+        }
+
+
     </style>
 </head>
 <body>
 <div id="container" style="height: 100%;position: absolute; top: 0; left: 0;right: 0; ">
 </div>
-<div id="loadingContainer" style="position: absolute;left:30%;top: 50%;width:40%;">
-    <div class="progress">
-        <div id="progress-bar" class="progress-bar progress-bar-info" role="progressbar" aria-valuemin="0"
-             aria-valuemax="100" aria-valuenow="0"
-             style="min-width: 2em;">
-            <span id="percentage"></span>
-        </div>
-    </div>
-</div>
 
+<div id="loadingContainer" style="position: absolute;left:30%;top: 50%;width:40%;">
+    <span id="progress-bar" class="expand"></span>
 </div>
 
 
@@ -324,7 +323,6 @@
 
 
 <script src="../js/jQuery-2.1.4.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
 <script src="../js/three.min.js"></script>
 <script src="../js/OrbitControls.js"></script>
 <script src="../js/MTLLoader.js"></script>
@@ -342,7 +340,66 @@
         ["#ffffff", 0.2]//env
     ] ;
     var loader = new ModelLoader("../models/ls/", lights);
-    loader.loadModel('296-1994')
+    loader.loadModel('296-1994');
+
+    var BACKCOLOR = [
+            "bg-blue",
+            "bg-yellow",
+    ];
+
+
+
+    $('.rt-sus li').click(function () {
+        if ($(this).hasClass(BACKCOLOR[1])) {
+            $(this).removeClass(BACKCOLOR[1]);
+            $(this).children(".ul-dropmenu").show();
+            if (this.id == 'lipq') {
+                sview.CloseClipPlane();
+            }
+            if (this.id == 'li_explosive') {
+                sview.ClearExplosive();
+            }
+        } else {
+            $('.rt-sus li').removeClass(BACKCOLOR[1]);
+            $(this).addClass(BACKCOLOR[1]);
+            $('.rt-sus li').children(".ul-dropmenu").hide();
+            $(this).children(".ul-dropmenu").show();
+        }
+    });
+
+
+    //视图
+    $("#front").click(function () {
+        SetPerspective(0)
+    });
+    $("#back").click(function () {
+        SetPerspective(1)
+    });
+    $("#left").click(function () {
+        SetPerspective(3)
+    });
+    $("#right").click(function () {
+        SetPerspective(2)
+    });
+    $("#top").click(function () {
+        SetPerspective(5)
+    });
+    $("#bottom").click(function () {
+        SetPerspective(4)
+    });
+    $("#isometric").click(function () {
+        SetPerspective(6);
+    });
+
+    //渲染模式
+    $("#showwireframe").click(function () {
+        loader.showWireFrame(true);
+    });
+
+
+
+
+
 </script>
 
 

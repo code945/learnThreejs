@@ -56,6 +56,19 @@ ModelLoader = function (dir,lights) {
         loadModel(dir, modelname, {x: 0, y: 0, z: 0});
     };
 
+
+    this.showWireFrame = function (flag) {
+        var obj =scene.getObjectByName("TargetModel");
+        if(flag)
+        {
+            obj.children[0].material.wireframe = true;
+        }
+        else
+            obj.children[0].material.wireframe = false;
+    };
+
+
+
     function render() {
         requestAnimationFrame(render);
         controls.update();
@@ -97,6 +110,7 @@ ModelLoader = function (dir,lights) {
             objLoader.setMaterials(materials);
             objLoader.load(folder + name + ".obj", function (object) {
                 object.position.set(position.x, position.y, position.z);
+                object.name = "TargetModel";
                 scene.add(object);
                 fitCameraLight(object);
                 $("#progress-bar").css("width", '100%');
