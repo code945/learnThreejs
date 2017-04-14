@@ -256,10 +256,10 @@
                 }
             ],
             animation:[
-                {type:"on",object:"leftPart",attribute:"rotation",to:{ x: 0, y: -Math.PI / 1.5, z: 0 },time:800 },
-                {type:"on",object:"rightPart",attribute:"rotation",to:{ x: 0, y: Math.PI / 1.5, z: 0 },time:800},
-                {type:"off",object:"leftPart",attribute:"rotation",to:{ x: 0, y: 0, z: 0 },time:800 },
-                {type:"off",object:"rightPart",attribute:"rotation",to:{ x: 0, y: 0, z: 0 },time:800}
+                {type:"on",object:"leftPart",attribute:"position",to:{x:-width*0.8,y:0,z:0},time:800 },
+                {type:"on",object:"rightPart",attribute:"position",to:{x:width*0.8,y:0,z:0},time:800},
+                {type:"off",object:"leftPart",attribute:"position",to:{x:-width/2,y:0,z:0},time:800 },
+                {type:"off",object:"rightPart",attribute:"position",to:{x:width/2,y:0,z:0},time:800}
             ]
         };
 
