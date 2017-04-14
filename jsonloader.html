@@ -14,11 +14,13 @@
     <script src="js/three.js"></script>
     <script src="js/OrbitControls.js"></script>
     <script src="js/jQuery-2.1.4.min.js"></script>
+    <script src="js/Tween.js"></script>
 </head>
 <body>
 
 <script>
-
+    var animationOn=[];
+    var animationOff=[];
     var scene = new THREE.Scene();
     var camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 10000);
     camera.position.set(0, 500, 500);
@@ -37,70 +39,293 @@
     scene.add(lightDirect);
 
     var controls = new THREE.OrbitControls(camera, renderer.domElement);
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+    function onDocumentMouseDown(event) {
+        event.preventDefault();
+        trigerAnimation()
+    }
 
     getJson();
     render();
 
     function render() {
         requestAnimationFrame(render);
+
+        TWEEN.update();
+
         renderer.render(scene, camera);
     }
     ;
 
+    var isOn = false;
+    function trigerAnimation() {
+        if(isOn)
+        {
+            $.each(animationOn,function (idx,a) {
+                a.start();
+            })
+        }
+        else
+        {
+            $.each(animationOff,function (idx,a) {
+                a.start();
+            })
+        }
+        isOn = !isOn;
+    }
+
+
+
+
+    function getMultiMaterial(data) {
+        var array = [];
+        for(var i = 0 ;i<data.materials.length;i++)
+        {
+            array.push(createMaterial(data.materials[i]));
+        }
+        var mtl = new  THREE.MultiMaterial(array);
+        return mtl;
+    }
+
+    function createMaterial(data)
+    {
+        var material = null;
+        switch (data.type)
+        {
+            case "phong":
+
+                if(data.map)
+                {
+                    material =new  THREE.MeshPhongMaterial({map:new THREE.TextureLoader().load(data.map)});
+                }
+                else if(data.color)
+                {
+                    material =new   THREE.MeshPhongMaterial({color:data.color});
+                }
+                break;
+            case "multiMaterial":
+                material = getMultiMaterial(data);
+                break;
+        }
+        return material;
+    }
+
+    function loadPredefineModel(json) {
+        var obj = null;
+        if(json.type == "group")
+        {
+            obj = new THREE.Group();
+        }
+        else if(json.type == "mesh")
+        {
+            var geometry,material;
+            if(json.geometry)
+            {
+                var g = json.geometry;
+                switch (g.type)
+                {
+                    case "box":
+                        geometry = new THREE.BoxGeometry(g.size.x,g.size.y,g.size.z);
+                        if(g.translate)
+                            geometry.translate(g.translate.x,g.translate.y,g.translate.z)
+                        break;
+                }
+            }
+
+            if(json.material)
+            {
+                var m = json.material;
+                material = createMaterial(m);
+            }
+            obj = new THREE.Mesh(geometry,material);
+        }
+
+        if(json.position)
+        {
+            obj.position.set(json.position.x,json.position.y,json.position.z);
+        }
+
+        if(json.name)
+        {
+            obj.name = json.name;
+        }
+
+        //process children
+        if(obj && json.children && json.children.length >0)
+        {
+            $.each(json.children,function (idx,child) {
+                var m = loadPredefineModel(child);
+                obj.add(m);
+            })
+        }
+
+        if(json.animation)
+        {
+            $.each(json.animation,function (idx,a) {
+                var target = obj.getObjectByName(a.object);
+                if(target)
+                {
+                    var tween= new TWEEN.Tween(target[a.attribute])
+                            .to(a.to, a.time);
+                    if(a.type=="on")
+                        animationOn.push(tween);
+                    else
+                        animationOff.push(tween);
+                }
+
+            });
+
+        }
+
+        return obj;
+    }
+
+
+
     function getJson() {
-        var color = 0xC3C3C3;
-        var textureLeft = null;
-        var textureRight= null;
-        var width = 120, height = 180, depth = 50;
-        var t1 = new THREE.TextureLoader().load("images/left_door.jpg",function (textureL){
-            textureLeft = textureL;
-            var t2 = new THREE.TextureLoader().load("images/right_door.jpg",function (textureR) {
-                textureRight = textureR;
+        var width = 120, height = 180, depth = 2;
+        var json = {
+            type:"group",
+            children:[
+                {
+                    type:"mesh",
+                    name:"leftPart",
+                    size:{x:1,y:1,z:1},
+                    position:{x: -width/2,y:0,z:0},
+                    geometry:{
+                        type:"box",
+                        size:{x:width/2,y:height,z:depth},
+                        translate:{x:width/4,y:0,z:0}
+                    },
+                    material:{
+                        type:"multiMaterial",
+                        materials:[
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",map:"images/left_door.jpg",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",map:"images/right_door.jpg",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1}
+                        ]
+                    }
+                },
+                {
+                    type:"mesh",
+                    name:"rightPart",
+                    size:{x:1,y:1,z:1},
+                    position:{x:width/2,y:0,z:0},
+                    geometry:{
+                        type:"box",
+                        size:{x:width/2,y:height,z:depth},
+                        translate:{x:-width/4,y:0,z:0}
+                    },
+                    material:{
+                        type:"multiMaterial",
+                        materials:[
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",map:"images/right_door.jpg",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1},
+                            {type:"phong",map:"images/left_door.jpg",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1}
+                        ]
+                    }
+                },
+                {
+                    type:"mesh",
+                    name:"topPart",
+                    size:{x:1,y:1,z:1},
+                    position:{x:0,y:height/2,z:0},
+                    geometry:{
+                        type:"box",
+                        size:{x:width,y:1,z:depth},
+                    },
+                    material:{type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1}
+                },
+                {
+                    type:"mesh",
+                    name:"bottomPart",
+                    size:{x:1,y:1,z:1},
+                    position:{x:0,y:-height/2,z:0},
+                    geometry:{
+                        type:"box",
+                        size:{x:width,y:1,z:depth},
+                    },
+                    material:{type:"phong",color:"0xC3C3C3",side:THREE.DoubleSide,opacity:1}
+                }
+            ],
+            animation:[
+                {type:"on",object:"leftPart",attribute:"rotation",to:{ x: 0, y: -Math.PI / 1.5, z: 0 },time:800 },
+                {type:"on",object:"rightPart",attribute:"rotation",to:{ x: 0, y: Math.PI / 1.5, z: 0 },time:800},
+                {type:"off",object:"leftPart",attribute:"rotation",to:{ x: 0, y: 0, z: 0 },time:800 },
+                {type:"off",object:"rightPart",attribute:"rotation",to:{ x: 0, y: 0, z: 0 },time:800}
+            ]
+        };
 
-                var rightMat = new THREE.MeshPhongMaterial({ color: color, });
-                var leftMat = new THREE.MeshPhongMaterial({ color: color });
-                var topMat = new THREE.MeshPhongMaterial({ color: color });
-
-                var bottomMat = new THREE.MeshPhongMaterial({ color: color });
-                var frontMat = new THREE.MeshPhongMaterial({ map: textureLeft});
-                var backMat = new THREE.MeshPhongMaterial({ map: textureRight });
-
-                var leftMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, frontMat, backMat]);
-                var rightMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, backMat, frontMat]);
 
 
-                var geoLeft = new THREE.BoxGeometry(width / 2, height, depth);
-                geoLeft.translate(width / 4, 0, 0);
-                var leftPart = new THREE.Mesh(geoLeft, leftMaterial);
-                leftPart.position.set(-width / 2, 0, 0);
-                leftPart.userData.objType = "doorPart";
-
-                var geoRight = new THREE.BoxGeometry(width / 2, height, depth);
-                geoRight.translate(-width / 4, 0, 0);
-                var rightPart = new THREE.Mesh(geoRight, rightMaterial);
-                rightPart.position.set(width / 2, 0, 0);
-                rightPart.userData.objType = "doorPart";
 
 
-                var topPart = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.5, height), new THREE.MeshPhongMaterial({ color: color, side: THREE.DoubleSide }));
-                topPart.rotateX(-Math.PI / 2);
-                topPart.position.set(0, height / 2, 0);
 
-                var cube = new THREE.Group();
-                cube.add(leftPart);
-                cube.add(rightPart);
-                cube.add(topPart);
 
+
+
+
+
+//        var color = 0xC3C3C3;
+//        var textureLeft = null;
+//        var textureRight= null;
+//        var width = 120, height = 180, depth = 2;
+//        var t1 = new THREE.TextureLoader().load("images/left_door.jpg",function (textureL){
+//            textureLeft = textureL;
+//            var t2 = new THREE.TextureLoader().load("images/right_door.jpg",function (textureR) {
+//                textureRight = textureR;
+//
+//                var rightMat = new THREE.MeshPhongMaterial({ color: color, });
+//                var leftMat = new THREE.MeshPhongMaterial({ color: color });
+//                var topMat = new THREE.MeshPhongMaterial({ color: color });
+//
+//                var bottomMat = new THREE.MeshPhongMaterial({ color: color });
+//                var frontMat = new THREE.MeshPhongMaterial({ map: textureLeft});
+//                var backMat = new THREE.MeshPhongMaterial({ map: textureRight });
+//
+//                var leftMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, frontMat, backMat]);
+//                var rightMaterial = new THREE.MultiMaterial([rightMat, leftMat, topMat, bottomMat, backMat, frontMat]);
+//
+//
+//                var geoLeft = new THREE.BoxGeometry(width / 2, height, depth);
+//                geoLeft.translate(width / 4, 0, 0);
+//                var leftPart = new THREE.Mesh(geoLeft, leftMaterial);
+//                leftPart.position.set(-width / 2, 0, 0);
+//                leftPart.userData.objType = "doorPart";
+//
+//                var geoRight = new THREE.BoxGeometry(width / 2, height, depth);
+//                geoRight.translate(-width / 4, 0, 0);
+//                var rightPart = new THREE.Mesh(geoRight, rightMaterial);
+//                rightPart.position.set(width / 2, 0, 0);
+//                rightPart.userData.objType = "doorPart";
+//
+//
+//                var topPart = new THREE.Mesh(new THREE.PlaneGeometry(width, 0.5, height), new THREE.MeshPhongMaterial({ color: color, side: THREE.DoubleSide }));
+//                topPart.rotateX(-Math.PI / 2);
+//                topPart.position.set(0, height / 2, 0);
+//
+//                var cube = new THREE.Group();
+//                cube.add(leftPart);
+//                cube.add(rightPart);
+//                cube.add(topPart);
+                var cube = loadPredefineModel(json);
                 scene.add( cube );
-                console.log(cube.toJSON());
+//                console.log( JSON.stringify(cube.toJSON()) );
 //                var loader = new THREE.ObjectLoader();
 //                var obj = loader.parse( mesh.toJSON(), function ( obj ) {
 //                    scene.add( obj );
 //                } );
-            });
+//            });
 
 
-        });
+ //       });
 
 
 
