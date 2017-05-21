@@ -30,14 +30,13 @@
 
 
 
-<script src="../js/jQuery-2.1.4.min.js?v=1.0.0"></script>
-<script src="../js/bootstrap.min.js?v=1.0.0"></script>
-<script src="../js/three.min.js?v=1.0.0"></script>
-<script src="../js/hammer.min.js?v=1.0.0"></script>
-<script src="../js/TouchControls.js?v=1.0.0"></script>
-<script src="../js/MTLLoader.js?v=1.0.0"></script>
-<script src="../js/OBJLoader.js?v=1.0.0"></script>
-<script src="ShowModel.js?v=1.0.0"></script>
+<script src="js/jQuery-2.1.4.min.js?v=1.0.1"></script>
+<script src="js/three.min.js?v=1.0.1"></script>
+<script src="js/hammer.min.js?v=1.0.1"></script>
+<script src="js/TouchControls.js?v=1.0.1"></script>
+<script src="js/MTLLoader.js?v=1.0.1"></script>
+<script src="js/OBJLoader.js?v=1.0.1"></script>
+<script src="js/ShowModel.js?v=1.0.1"></script>
 
 <script>
     var lights = [
@@ -50,8 +49,14 @@
         ["#eee", 0.8]//env
      ] ;
 
-   var loader = new ModelLoader(lights);
-    loader.loadModelByUrl("../models/hzzx/", "hzzx" )
+    var links ={
+        "Group77":"a.html",
+        "Group59":"b.html",
+        "Group86":"b.html",
+        "Group58":"c.html"
+    };
+   var loader = new ModelLoader(lights,null,links);
+    loader.loadModelByUrl("models/hzzx/", "hzzx" )
 </script>
 
 
