@@ -9,7 +9,7 @@ ModelLoader = function (lights) {
     var camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000000);
     camera.position.set(0, 0, 10);
     //render
-    var renderer = new THREE.WebGLRenderer({antialias: true});
+    var renderer = new THREE.WebGLRenderer({antialias: true, logarithmicDepthBuffer: true});
     renderer.setSize(container.offsetWidth, container.offsetHeight);
     renderer.setClearColor(0x575757, 1);
     container.appendChild(renderer.domElement);
@@ -128,6 +128,8 @@ ModelLoader = function (lights) {
         var lightAm = new THREE.AmbientLight(lightParms[6][0], lightParms[6][1]);
         scene.add(lightAm);
 
+        controls.minDistance = max *0.01;
+        controls.maxDistance = 10 * max;
     }
 
 
