@@ -1,7 +1,7 @@
 /**
  * Created by leo on 2017/2/27.
  */
-ModelLoader = function (lights) {
+ModelLoader = function (lights,cameraPosition) {
     var container = document.getElementById("container");
     //scene
     var scene = new THREE.Scene();
@@ -98,10 +98,21 @@ ModelLoader = function (lights) {
         var center = b.getCenter();
         var max = size.x>size.z?size.x:size.z;
 
-        camera.position.set(center.x, center.y + max , center.z + size.z);
-        camera.lookAt(center);
-        controls.target.set(center.x, center.y, center.z);
-        controls.update();
+        if(cameraPosition)
+        {
+            camera.position.set(center.x + cameraPosition.x, center.y + cameraPosition.y  , center.z +cameraPosition.z );
+            camera.lookAt(center);
+            controls.target.set(center.x, center.y, center.z);
+            controls.update();
+        }
+        else
+        {
+            camera.position.set(center.x, center.y + max , center.z + size.z);
+            camera.lookAt(center);
+            controls.target.set(center.x, center.y, center.z);
+            controls.update();
+        }
+
 
 
 
@@ -128,8 +139,8 @@ ModelLoader = function (lights) {
         var lightAm = new THREE.AmbientLight(lightParms[6][0], lightParms[6][1]);
         scene.add(lightAm);
 
-        controls.minDistance = max *0.01;
-        controls.maxDistance = 10 * max;
+        // controls.minDistance = max *0.01;
+        // controls.maxDistance = 10 * max;
     }
 
 

@@ -30,27 +30,27 @@
 
 
 
-<script src="../js/jQuery-2.1.4.min.js?v=1.0.0"></script>
-<script src="../js/bootstrap.min.js?v=1.0.0"></script>
-<script src="../js/three.min.js?v=1.0.0"></script>
-<script src="../js/hammer.min.js?v=1.0.0"></script>
-<script src="../js/TouchControls.js?v=1.0.0"></script>
-<script src="../js/MTLLoader.js?v=1.0.0"></script>
-<script src="../js/OBJLoader.js?v=1.0.0"></script>
-<script src="ShowModel.js?v=1.0.0"></script>
+<script src="../js/jQuery-2.1.4.min.js?v=1.0.1"></script>
+<script src="../js/bootstrap.min.js?v=1.0.1"></script>
+<script src="../js/three.min.js?v=1.0.1"></script>
+<script src="../js/hammer.min.js?v=1.0.1"></script>
+<script src="../js/TouchControls.js?v=1.0.1"></script>
+<script src="../js/MTLLoader.js?v=1.0.1"></script>
+<script src="../js/OBJLoader.js?v=1.0.1"></script>
+<script src="ShowModel.js?v=1.0.1"></script>
 
 <script>
     var lights = [
-        ["#eee", 0.8],//top
-        ["#eee", 0.8],//bottom
+        ["#eee", 0.4],//top
+        ["#eee", 0.4],//bottom
         ["#eee", 0.1],//left
         ["#eee", 0.1],//right
-        ["#eee", 0.6],//front
-        ["#eee", 0.6],//rear
+        ["#eee", 0.4],//front
+        ["#eee", 0.4],//rear
         ["#eee", 0.8]//env
      ] ;
 
-   var loader = new ModelLoader(lights);
+   var loader = new ModelLoader(lights,{x:4000,y:2000,z:0});
     loader.loadModelByUrl("../models/gjjp/", "gjjp" )
 </script>
 

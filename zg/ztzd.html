@@ -30,14 +30,14 @@
 
 
 
-<script src="../js/jQuery-2.1.4.min.js?v=1.0.0"></script>
-<script src="../js/bootstrap.min.js?v=1.0.0"></script>
-<script src="../js/three.min.js?v=1.0.0"></script>
-<script src="../js/hammer.min.js?v=1.0.0"></script>
-<script src="../js/TouchControls.js?v=1.0.0"></script>
-<script src="../js/MTLLoader.js?v=1.0.0"></script>
-<script src="../js/OBJLoader.js?v=1.0.0"></script>
-<script src="ShowModel.js?v=1.0.0"></script>
+<script src="../js/jQuery-2.1.4.min.js?v=1.0.1"></script>
+<script src="../js/bootstrap.min.js?v=1.0.1"></script>
+<script src="../js/three.min.js?v=1.0.1"></script>
+<script src="../js/hammer.min.js?v=1.0.1"></script>
+<script src="../js/TouchControls.js?v=1.0.1"></script>
+<script src="../js/MTLLoader.js?v=1.0.1"></script>
+<script src="../js/OBJLoader.js?v=1.0.1"></script>
+<script src="ShowModel.js?v=1.0.1"></script>
 
 <script>
     var lights = [
@@ -50,7 +50,7 @@
         ["#eee", 0.6]//env
      ] ;
 
-   var loader = new ModelLoader(lights);
+   var loader = new ModelLoader(lights,{x:0,y:400,z:1200});
     loader.loadModelByUrl("../models/ztzd/", "ztzd" )
 </script>
 
