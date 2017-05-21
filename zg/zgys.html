@@ -50,22 +50,8 @@
         ["#eee", 0.8]//env
      ] ;
 
-
-    function getFloor() {
-        var texture = new THREE.TextureLoader().load("floor.jpg");
-
-        var geometry = new THREE.PlaneGeometry(250, 250, 1);
-        var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
-        var plane = new THREE.Mesh(geometry, material);
-        plane.translateY(-0.5);
-        plane.rotateX(-Math.PI / 2);
-        return plane;
-    }
-
-
-
-    var loader = new ModelLoader(lights);
-    loader.loadModel3d(getFloor());
+   var loader = new ModelLoader(lights);
+    loader.loadModelByUrl("../models/zgys/", "zgys" )
 </script>
 
 

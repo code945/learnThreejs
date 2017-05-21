@@ -1,7 +1,7 @@
 /**
  * Created by leo on 2017/2/27.
  */
-ModelLoader = function (dir, name,lights) {
+ModelLoader = function (lights) {
     var container = document.getElementById("container");
     //scene
     var scene = new THREE.Scene();
@@ -40,7 +40,6 @@ ModelLoader = function (dir, name,lights) {
 
     }
 
-    loadModel(dir, name, {x: 0, y: 0, z: 0});
     render();
 
     function render() {
@@ -129,9 +128,22 @@ ModelLoader = function (dir, name,lights) {
         var lightAm = new THREE.AmbientLight(lightParms[6][0], lightParms[6][1]);
         scene.add(lightAm);
 
-        controls.minDistance = size.z *0.5;
-        controls.maxDistance = 10 * size.z;
-
     }
+
+
+    this.loadModelByUrl = function  (dir, name) {
+        loadModel(dir, name, {x: 0, y: 0, z: 0})
+    }
+
+    this.loadModel3d =function(objected)
+    {
+        scene.add(objected);
+        fitCameraLight(objected);
+        $("#progress-bar").css("width", '100%');
+        setTimeout(function () {
+            $("#loadingContainer").hide();
+        }, 800);
+    }
+
 
 };
