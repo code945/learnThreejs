@@ -82,8 +82,7 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
     function render() {
         requestAnimationFrame(render);
         if(TWEEN)
-            TWEEN.update();
-        controls.update();
+            TWEEN.update(); 
         renderer.render(scene, camera);
     }
 
@@ -202,7 +201,10 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
 
     this.setControls = function () {
         controls.minPolarAngle = -Math.PI  ; // radians
-        controls.maxPolarAngle = -Math.PI  ; // radians
+        controls.maxPolarAngle = -Math.PI; // radians
+        controls.enableZoom = false;
+        controls.enableRotate = false;
+        controls.checkBoundry = true;
         controls.zoomSpeed = 0.3; 
     }
 
