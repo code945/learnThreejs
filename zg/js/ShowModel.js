@@ -197,6 +197,7 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
     this.setControls = function () {
         controls.minPolarAngle = -Math.PI  ; // radians
         controls.maxPolarAngle = -Math.PI  ; // radians
+       controls.zoomSpeed=0.6;
     }
 
 };
