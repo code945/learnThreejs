@@ -88,14 +88,20 @@
     Addcar("images/car7.png", [-516, 2, -428], { "x": 367, "y": 2, "z": 83 } ) 
     Addcar("images/car8.png",  [-759, 2, -567], { "x": -153, "y": 2, "z": -220 } )
  
-    Addcar("images/car8.png", [467, 2, 69], { "x": -299, "y": 2, "z": -370 })
-    Addcar("images/car6.png", [78, 2, -147], { "x": -714, "y": 2, "z": -616 })
+    Addcar("images/car8.png", [-299, 2, -370], { "x": 467, "y": 2, "z": 69 })
+    Addcar("images/car6.png", [-714, 2, -616], { "x": 78, "y": 2, "z": -147 })
+
+    Addcar("images/car7.png", [-582, 2, 12], { "x": 104, "y": 2, "z": 402 }) 
+    Addcar("images/car9.png", [-404, 2, 93], { "x": 85, "y": 2, "z": 373 })
+
+    Addcar("images/car1.png", [199, 2, 228], { "x": -355, "y": 2, "z": 554 })
+    Addcar("images/car3.png", [112, 2, 295], { "x": -220, "y": 2, "z": 490 }) 
 
     function Addcar(img,position,to) {
         var car1 = getCar(img, position);
         loader.loadModel3d(car1);
         var tweenScale = new TWEEN.Tween(car1.position)
-              .to(to,20000)
+              .to(to,10000)
               .repeat(Infinity)
               .start();
     }
