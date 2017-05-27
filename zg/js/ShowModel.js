@@ -195,8 +195,8 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
     }
 
     this.setControls = function () {
-        controls.minPolarAngle = Math.PI  ; // radians
-        controls.maxPolarAngle = Math.PI  ; // radians
+        controls.minPolarAngle = -Math.PI  ; // radians
+        controls.maxPolarAngle = -Math.PI  ; // radians
     }
 
 };
