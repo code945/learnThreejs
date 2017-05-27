@@ -57,7 +57,7 @@
     function getFloor() {
         var texture = new THREE.TextureLoader().load("map.jpg");
 
-        var geometry = new THREE.PlaneGeometry(1920,1080, 1);
+        var geometry = new THREE.PlaneGeometry(1920,1280, 1);
         var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
         var plane = new THREE.Mesh(geometry, material);
         plane.translateY(-0.5);
