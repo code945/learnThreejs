@@ -26,6 +26,8 @@ THREE.OrbitControls = function ( object, domElement ) {
 		scope.update();
 	});
 
+	this.checkBoundry = false;
+
 	this.object = object;
 
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -174,8 +176,20 @@ THREE.OrbitControls = function ( object, domElement ) {
 			// restrict radius to be between desired limits
 			radius = Math.max( scope.minDistance, Math.min( scope.maxDistance, radius ) );
 
-			// move target to panned location
-			scope.target.add( panOffset );
+		    // move target to panned location
+			console.log(JSON.stringify(panOffset));
+
+			if (scope.checkBoundry)
+			{
+			    var w = (1920 - window.innerWidth-100) / 2;
+			    var v = scope.target.clone();
+			    v.add(panOffset);
+			    var out = v.x > w || v.x < -w || v.z > 256 || v.z < -256;
+			    if(!out)
+			        scope.target.add(panOffset);
+			}
+            else
+			    scope.target.add( panOffset );
 
 			offset.x = radius * Math.sin( phi ) * Math.sin( theta );
 			offset.y = radius * Math.cos( phi );

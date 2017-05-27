@@ -39,9 +39,9 @@
 <script src="js/jQuery-2.1.4.min.js"></script>
 <script src="js/three.min.js"></script>
 <script src="js/hammer.min.js"></script>
-<script src="js/TouchControls2.js"></script>
+<script src="js/TouchControls2.js?v=1.0.0"></script>
     <script src="js/Tween.js"></script>
-<script src="js/ShowModel.js"></script>
+<script src="js/ShowModel.js?v=1.0.0"></script>
 
 <script>
     var lights = [
@@ -95,7 +95,7 @@
         var car1 = getCar(img, position);
         loader.loadModel3d(car1);
         var tweenScale = new TWEEN.Tween(car1.position)
-              .to(to,50000)
+              .to(to,20000)
               .repeat(Infinity)
               .start();
     }
