@@ -45,13 +45,13 @@
 
 <script>
     var lights = [
-        ["#eee", 0.8],//top
-        ["#eee", 0.8],//bottom
-        ["#eee", 0.1],//left
-        ["#eee", 0.1],//right
-        ["#eee", 0.6],//front
-        ["#eee", 0.6],//rear
-        ["#eee", 0.8]//env
+        ["#eee", 0.0],//top
+        ["#eee", 0.0],//bottom
+        ["#eee", 0.0],//left
+        ["#eee", 0.0],//right
+        ["#eee", 0.0],//front
+        ["#eee", 0.0],//rear
+        ["#ffffff", 1]//env
      ] ;
 
 
@@ -59,7 +59,7 @@
         var texture = new THREE.TextureLoader().load("map.jpg");
 
         var geometry = new THREE.PlaneGeometry(1920,1280, 1);
-        var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
+        var material = new THREE.MeshLambertMaterial({map: texture, side: THREE.DoubleSide});
         var plane = new THREE.Mesh(geometry, material); 
         plane.rotateX(-Math.PI / 2);
         return plane;
