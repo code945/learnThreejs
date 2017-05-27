@@ -3,6 +3,7 @@
  */
 ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
     var scope = this;
+    var treenEnabled = false;
     scope.rootVisual = null;
     var container = document.getElementById("container");
     //scene
@@ -81,7 +82,7 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
 
     function render() {
         requestAnimationFrame(render);
-        if(TWEEN)
+        if(treenEnabled)
             TWEEN.update(); 
         renderer.render(scene, camera);
     }
@@ -205,12 +206,8 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
         controls.enableZoom = false;
         controls.enableRotate = false;
         controls.checkBoundry = true;
-        controls.zoomSpeed = 0.3; 
-    }
-
-    this.beginAnnimation = function (object,position,time) {
-
-        
+        controls.zoomSpeed = 0.3;
+        treenEnabled = true;
     }
 
 
