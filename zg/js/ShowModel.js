@@ -37,6 +37,8 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
     document.addEventListener('mousedown', onDocumentMouseDown, false);
 
     function onDocumentMouseDown(event) {
+        if (!scope.rootVisual) return;
+
         var interact = intersectObjects(event, scope.rootVisual.children);
         if(interact)
         {
@@ -192,5 +194,9 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
         }, 800);
     }
 
+    this.setControls = function () {
+        controls.minPolarAngle = Math.PI  ; // radians
+        controls.maxPolarAngle = Math.PI  ; // radians
+    }
 
 };

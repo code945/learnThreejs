@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-    <title>模型查看</title>
+    <title>图</title>
     <style>
         html, body {
             margin: 0px;
@@ -36,14 +36,11 @@
 
 
 
-<script src="../js/jQuery-2.1.4.min.js"></script>
-<script src="../js/bootstrap.min.js"></script>
-<script src="../js/three.min.js"></script> 
-<script src="../js/hammer.min.js"></script> 
-<script src="../js/TouchControls.js"></script>
-<script src="../js/MTLLoader.js"></script>
-<script src="../js/OBJLoader.js"></script>
-<script src="ShowModel.js"></script>
+<script src="js/jQuery-2.1.4.min.js"></script>
+<script src="js/three.min.js"></script>
+<script src="js/hammer.min.js"></script>
+<script src="js/TouchControls.js"></script>
+<script src="js/ShowModel.js"></script>
 
 <script>
     var lights = [
@@ -58,9 +55,9 @@
 
 
     function getFloor() {
-        var texture = new THREE.TextureLoader().load("floor.jpg");
+        var texture = new THREE.TextureLoader().load("map.jpg");
 
-        var geometry = new THREE.PlaneGeometry(250, 250, 1);
+        var geometry = new THREE.PlaneGeometry(2000, 2000, 1);
         var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
         var plane = new THREE.Mesh(geometry, material);
         plane.translateY(-0.5);
@@ -70,8 +67,9 @@
 
 
 
-    var loader = new ModelLoader(lights);
+    var loader = new ModelLoader(lights,{x:0,y:500,z:0});
     loader.loadModel3d(getFloor());
+    loader.setControls()
 </script>
 
 
