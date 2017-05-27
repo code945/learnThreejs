@@ -14,18 +14,7 @@
 //    Pan - right mouse, or arrow keys / touch: three finter swipe
 
 THREE.OrbitControls = function ( object, domElement ) {
-	var mc = new Hammer.Manager(domElement);
-	mc.add(new Hammer.Pinch());
-	mc.on("pinchin",function (evt) {
-		dollyIn( getZoomScale() );
-		scope.update();
-	});
-
-	mc.on("pinchout",function (evt) {
-		dollyOut( getZoomScale() );
-		scope.update();
-	});
-
+	 
 	this.checkBoundry = false;
 
 	this.object = object;
