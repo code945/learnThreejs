@@ -1,7 +1,7 @@
 /**
  * Created by leo on 2017/2/27.
  */
-ModelLoader = function (lights,cameraPosition,objlinks) {
+ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
     var scope = this;
     scope.rootVisual = null;
     var container = document.getElementById("container");
@@ -38,12 +38,14 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
 
     function onDocumentMouseDown(event) {
         if (!scope.rootVisual) return;
-
-        var interact = intersectObjects(event, scope.rootVisual.children);
+        var g = scope.rootVisual.children.length>0
+        ? scope.rootVisual.children:[ scope.rootVisual];
+        var interact = intersectObjects(event, g);
         if(interact)
         {
+            console.log(JSON.stringify(interact.point));
             var obj = interact.object;
-            if(objlinks[obj.name])
+            if (objlinks && objlinks[obj.name])
             {
                 location.href = objlinks[obj.name];
             }
@@ -79,6 +81,8 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
 
     function render() {
         requestAnimationFrame(render);
+        if(TWEEN)
+            TWEEN.update();
         controls.update();
         renderer.render(scene, camera);
     }
@@ -133,21 +137,18 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
             size = new THREE.Vector3(50, 50, 50);
         var center = b.getCenter();
         var max = size.x>size.z?size.x:size.z;
-
+        var cameraPos = [center.x, center.y + max, center.z + size.z];
+        var cameraLook = center;
         if(cameraPosition)
         {
-            camera.position.set(center.x + cameraPosition.x, center.y + cameraPosition.y  , center.z +cameraPosition.z );
-            camera.lookAt(center);
-            controls.target.set(center.x, center.y, center.z);
-            controls.update();
-        }
-        else
-        {
-            camera.position.set(center.x, center.y + max , center.z + size.z);
-            camera.lookAt(center);
-            controls.target.set(center.x, center.y, center.z);
-            controls.update();
-        }
+            cameraPos = [center.x + cameraPosition.x, center.y + cameraPosition.y, center.z + cameraPosition.z] 
+        } 
+        if (cameraOffset)
+            center.set(center.x+cameraOffset.x,center.y+cameraOffset.y,center.z+cameraOffset.z)
+        camera.position.set(cameraPos[0], cameraPos[1], cameraPos[2]);
+        camera.lookAt(cameraLook);
+        controls.target.set(center.x, center.y, center.z);
+        controls.update();
 
 
 
@@ -184,20 +185,31 @@ ModelLoader = function (lights,cameraPosition,objlinks) {
         loadModel(dir, name, {x: 0, y: 0, z: 0})
     }
 
-    this.loadModel3d =function(objected)
+    this.loadModel3d =function(objected,isroot)
     {
         scene.add(objected);
-        fitCameraLight(objected);
-        $("#progress-bar").css("width", '100%');
-        setTimeout(function () {
-            $("#loadingContainer").hide();
-        }, 800);
+        if (isroot)
+        {
+            scope.rootVisual = objected;
+            fitCameraLight(objected);
+            $("#progress-bar").css("width", '100%');
+            setTimeout(function () {
+                $("#loadingContainer").hide();
+            }, 800);
+        }
+        
     }
 
     this.setControls = function () {
         controls.minPolarAngle = -Math.PI  ; // radians
         controls.maxPolarAngle = -Math.PI  ; // radians
-       controls.zoomSpeed=0.6;
+        controls.zoomSpeed = 0.3; 
     }
+
+    this.beginAnnimation = function (object,position,time) {
+
+        
+    }
+
 
 };

@@ -40,6 +40,7 @@
 <script src="js/three.min.js"></script>
 <script src="js/hammer.min.js"></script>
 <script src="js/TouchControls2.js"></script>
+    <script src="js/Tween.js"></script>
 <script src="js/ShowModel.js"></script>
 
 <script>
@@ -59,17 +60,47 @@
 
         var geometry = new THREE.PlaneGeometry(1920,1280, 1);
         var material = new THREE.MeshBasicMaterial({map: texture, side: THREE.DoubleSide});
-        var plane = new THREE.Mesh(geometry, material);
-        plane.translateY(-0.5);
+        var plane = new THREE.Mesh(geometry, material); 
         plane.rotateX(-Math.PI / 2);
         return plane;
     }
 
 
+    function getCar(img,position)
+    {
+        var texture = new THREE.TextureLoader().load(img);
 
-    var loader = new ModelLoader(lights,{x:0,y:500,z:0});
-    loader.loadModel3d(getFloor());
-    loader.setControls()
+        var geometry = new THREE.PlaneGeometry(40, 30, 1);
+        var material = new THREE.MeshBasicMaterial({ map: texture, transparent: true, opacity: 1, side: THREE.DoubleSide });
+        var plane = new THREE.Mesh(geometry, material);
+        plane.position.set(position[0], position[1], position[2]);
+        plane.rotateX(-Math.PI / 2);
+        return plane;   
+    }
+
+
+
+    var loader = new ModelLoader(lights, { x: -300, y: 500, z: 0 }, null, { x:  -300, y: 0, z: 0 });
+    loader.loadModel3d(getFloor(), true);
+    loader.setControls();
+
+    Addcar("images/car6.png", [-235, 0, -270],  { "x": 855, "y": 0, "z": 355} ) 
+    Addcar("images/car7.png", [-516, 0, -428], { "x": 367, "y": 0, "z": 83 } ) 
+    Addcar("images/car8.png",  [-759, 0, -567], { "x": -153, "y": 0, "z": -220 } )
+ 
+    Addcar("images/car8.png", [467, 0, 69], { "x": -299, "y": 0, "z": -370 })
+    Addcar("images/car6.png", [78, 0, -147], { "x": -714, "y": 0, "z": -616 })
+
+    function Addcar(img,position,to) {
+        var car1 = getCar(img, position);
+        loader.loadModel3d(car1);
+        var tweenScale = new TWEEN.Tween(car1.position)
+              .to(to,50000)
+              .repeat(Infinity)
+              .start();
+    }
+
+
 </script>
 
 
