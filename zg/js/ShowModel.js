@@ -82,7 +82,7 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
     function render() {
         requestAnimationFrame(render);
         // if(TWEEN)
-        //     TWEEN.update(); 
+        //     TWEEN.update();
         renderer.render(scene, camera);
     }
 
