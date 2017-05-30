@@ -39,16 +39,16 @@
 
 <script>
     var lights = [
-        ["#eee", 0.4],//top
-        ["#eee", 0.4],//bottom
-        ["#eee", 0.1],//left
-        ["#eee", 0.1],//right
-        ["#eee", 0.4],//front
-        ["#eee", 0.4],//rear
+        ["#eee", 0.2],//top
+        ["#eee", 0.0],//bottom
+        ["#eee", 0.0],//left
+        ["#eee", 0.0],//right
+        ["#eee", 0.0],//front
+        ["#eee", 0.0],//rear
         ["#eee", 0.8]//env
      ] ;
 
-   var loader = new ModelLoader(lights,{x:4000,y:2000,z:0});
+   var loader = new ModelLoader(lights);
     loader.loadModelByUrl("models/gjjp/", "gjjp" )
 </script>
 
