@@ -8,11 +8,20 @@
         html, body {
             margin: 0px;
             overflow: hidden;
-            background: url(images/bg.jpg) no-repeat center center fixed;
-            -webkit-background-size: cover;
-            -moz-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
+        }
+
+        div#div1{
+            position:fixed;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+            z-index:-1;
+        }
+        div#div1 > img {
+            height:100%;
+            width:100%;
+            border:0;
         }
 
         .expand {
@@ -25,6 +34,7 @@
     </style>
 </head>
 <body>
+<div id="div1"><img src="images/bg.jpg" /></div>
 <div id="container" style="height: 100%;position: absolute; top: 0; left: 0;right: 0;">
 </div>
 <div id="loadingContainer" style="position: absolute;left:30%;top: 50%;width:40%;">
