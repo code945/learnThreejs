@@ -8,9 +8,13 @@
         html, body {
             margin: 0px;
             overflow: hidden;
-            background-color: #575757;
         }
 
+        body
+        {
+            width:100%;
+            background:url(images/bg.jpg) 50% 50% / cover no-repeat fixed;
+        }
 
         .expand {
             height:2px;
@@ -55,7 +59,7 @@
         "Group86":"b.html",
         "Group58":"c.html"
     };
-   var loader = new ModelLoader(lights,null,links);
+   var loader = new ModelLoader(lights,{x:-2000,y:3000,z:0},links);
     loader.loadModelByUrl("models/hzzx/", "hzzx" )
 </script>
 

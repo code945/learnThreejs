@@ -11,9 +11,9 @@ ModelLoader = function (lights,cameraPosition,objlinks,cameraOffset) {
     var camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000000);
     camera.position.set(0, 0, 10);
     //render
-    var renderer = new THREE.WebGLRenderer({antialias: true, logarithmicDepthBuffer: true});
+    var renderer = new THREE.WebGLRenderer({antialias: true,alpha :true, logarithmicDepthBuffer: true});
     renderer.setSize(container.offsetWidth, container.offsetHeight);
-    renderer.setClearColor(0x575757, 1);
+    renderer.autoClear = false;
     container.appendChild(renderer.domElement);
 
     var raycaster = new THREE.Raycaster();
