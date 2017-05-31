@@ -10,12 +10,19 @@
             overflow: hidden;
         }
 
-        body
-        {
-            width:100%;
-            background:url(images/bg.jpg) 50% 50% / cover no-repeat fixed;
+        div#div1{
+            position:fixed;
+            top:0;
+            left:0;
+            bottom:0;
+            right:0;
+            z-index:-1;
         }
-
+        div#div1 > img {
+            height:100%;
+            width:100%;
+            border:0;
+        }
 
         .expand {
             height:2px;
@@ -27,6 +34,7 @@
     </style>
 </head>
 <body>
+<div id="div1"><img src="images/bg.jpg" /></div>
 <div id="container" style="height: 100%;position: absolute; top: 0; left: 0;right: 0;">
 </div>
 <div id="loadingContainer" style="position: absolute;left:30%;top: 50%;width:40%;">
